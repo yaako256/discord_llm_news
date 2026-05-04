@@ -4,3 +4,8 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+# rss feed用クレート
+rss = "2.0" 
+
+# HTTPリクエストを簡単に送受信
+reqwest = { version = "0.12", features = ["blocking"]}

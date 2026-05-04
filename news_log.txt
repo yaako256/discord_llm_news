@@ -1,0 +1,240 @@
+first_llm_request {
+    id: 100,
+    genre: "主要",
+    title: "高市首相 GW外遊の成果を強調",
+}
+first_llm_request {
+    id: 101,
+    genre: "主要",
+    title: "パナマ運河 通航量増加し大混雑",
+}
+first_llm_request {
+    id: 102,
+    genre: "主要",
+    title: "自転車が倒れ重体 淡路島を一周中",
+}
+first_llm_request {
+    id: 103,
+    genre: "主要",
+    title: "PAで24台の窓割れる 強風影響か",
+}
+first_llm_request {
+    id: 104,
+    genre: "主要",
+    title: "潮干狩り 違反多発で「無法地帯」",
+}
+first_llm_request {
+    id: 105,
+    genre: "主要",
+    title: "大山と森下が死球受ける 虎党怒号",
+}
+first_llm_request {
+    id: 106,
+    genre: "主要",
+    title: "布川敏和 たまたま元妻と家が隣に",
+}
+first_llm_request {
+    id: 107,
+    genre: "主要",
+    title: "吉田ジョージ氏死去 異色の経歴",
+}
+first_llm_request {
+    id: 200,
+    genre: "国内",
+    title: "高市首相 GW外遊の成果を強調",
+}
+first_llm_request {
+    id: 201,
+    genre: "国内",
+    title: "パナマ運河 通航量増加し大混雑",
+}
+first_llm_request {
+    id: 202,
+    genre: "国内",
+    title: "自転車が倒れ重体 淡路島を一周中",
+}
+first_llm_request {
+    id: 203,
+    genre: "国内",
+    title: "PAで24台の窓割れる 強風影響か",
+}
+first_llm_request {
+    id: 204,
+    genre: "国内",
+    title: "潮干狩り 違反多発で「無法地帯」",
+}
+first_llm_request {
+    id: 205,
+    genre: "国内",
+    title: "大山と森下が死球受ける 虎党怒号",
+}
+first_llm_request {
+    id: 206,
+    genre: "国内",
+    title: "布川敏和 たまたま元妻と家が隣に",
+}
+first_llm_request {
+    id: 207,
+    genre: "国内",
+    title: "吉田ジョージ氏死去 異色の経歴",
+}
+first_llm_request {
+    id: 300,
+    genre: "経済",
+    title: "高市首相 GW外遊の成果を強調",
+}
+first_llm_request {
+    id: 301,
+    genre: "経済",
+    title: "パナマ運河 通航量増加し大混雑",
+}
+first_llm_request {
+    id: 302,
+    genre: "経済",
+    title: "自転車が倒れ重体 淡路島を一周中",
+}
+first_llm_request {
+    id: 303,
+    genre: "経済",
+    title: "PAで24台の窓割れる 強風影響か",
+}
+first_llm_request {
+    id: 304,
+    genre: "経済",
+    title: "潮干狩り 違反多発で「無法地帯」",
+}
+first_llm_request {
+    id: 305,
+    genre: "経済",
+    title: "大山と森下が死球受ける 虎党怒号",
+}
+first_llm_request {
+    id: 306,
+    genre: "経済",
+    title: "布川敏和 たまたま元妻と家が隣に",
+}
+first_llm_request {
+    id: 307,
+    genre: "経済",
+    title: "吉田ジョージ氏死去 異色の経歴",
+}
+first_llm_request {
+    id: 400,
+    genre: "エンタメ",
+    title: "高市首相 GW外遊の成果を強調",
+}
+first_llm_request {
+    id: 401,
+    genre: "エンタメ",
+    title: "パナマ運河 通航量増加し大混雑",
+}
+first_llm_request {
+    id: 402,
+    genre: "エンタメ",
+    title: "自転車が倒れ重体 淡路島を一周中",
+}
+first_llm_request {
+    id: 403,
+    genre: "エンタメ",
+    title: "PAで24台の窓割れる 強風影響か",
+}
+first_llm_request {
+    id: 404,
+    genre: "エンタメ",
+    title: "潮干狩り 違反多発で「無法地帯」",
+}
+first_llm_request {
+    id: 405,
+    genre: "エンタメ",
+    title: "大山と森下が死球受ける 虎党怒号",
+}
+first_llm_request {
+    id: 406,
+    genre: "エンタメ",
+    title: "布川敏和 たまたま元妻と家が隣に",
+}
+first_llm_request {
+    id: 407,
+    genre: "エンタメ",
+    title: "吉田ジョージ氏死去 異色の経歴",
+}
+first_llm_request {
+    id: 500,
+    genre: "IT",
+    title: "高市首相 GW外遊の成果を強調",
+}
+first_llm_request {
+    id: 501,
+    genre: "IT",
+    title: "パナマ運河 通航量増加し大混雑",
+}
+first_llm_request {
+    id: 502,
+    genre: "IT",
+    title: "自転車が倒れ重体 淡路島を一周中",
+}
+first_llm_request {
+    id: 503,
+    genre: "IT",
+    title: "PAで24台の窓割れる 強風影響か",
+}
+first_llm_request {
+    id: 504,
+    genre: "IT",
+    title: "潮干狩り 違反多発で「無法地帯」",
+}
+first_llm_request {
+    id: 505,
+    genre: "IT",
+    title: "大山と森下が死球受ける 虎党怒号",
+}
+first_llm_request {
+    id: 506,
+    genre: "IT",
+    title: "布川敏和 たまたま元妻と家が隣に",
+}
+first_llm_request {
+    id: 507,
+    genre: "IT",
+    title: "吉田ジョージ氏死去 異色の経歴",
+}
+first_llm_request {
+    id: 600,
+    genre: "科学",
+    title: "高市首相 GW外遊の成果を強調",
+}
+first_llm_request {
+    id: 601,
+    genre: "科学",
+    title: "パナマ運河 通航量増加し大混雑",
+}
+first_llm_request {
+    id: 602,
+    genre: "科学",
+    title: "自転車が倒れ重体 淡路島を一周中",
+}
+first_llm_request {
+    id: 603,
+    genre: "科学",
+    title: "PAで24台の窓割れる 強風影響か",
+}
+first_llm_request {
+    id: 604,
+    genre: "科学",
+    title: "潮干狩り 違反多発で「無法地帯」",
+}
+first_llm_request {
+    id: 605,
+    genre: "科学",
+    title: "大山と森下が死球受ける 虎党怒号",
+}
+first_llm_request {
+    id: 606,
+    genre: "科学",
+    title: "布川敏和 たまたま元妻と家が隣に",
+}
+first_llm_request {
+    id: 607,
+    genre: "科学",
+    title: "吉田ジョージ氏死去 異色の経歴",
+}
