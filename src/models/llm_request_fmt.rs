@@ -21,14 +21,35 @@ impl first_llm_request_fmt {
 
 #[derive(Debug)]
 pub struct second_llm_request_fmt {
-    id: i8,
-    genre: String,
+    pub id: i16,
+    pub genre: String,
     title: String,
-    body: String,
+    pub contents: String,
 }
+impl second_llm_request_fmt {
+    pub fn new(id: i16, genre: String,title: String, contents: String) -> Self {
+        Self {
+            id: id,
+            genre: genre,
+            title:title,
+            contents: contents,
+        }
+    }
+}
+
 #[derive(Debug)]
 pub struct final_llm_request_fmt {
     genre: String,
     title: String,
-    body: String,
+    contents: String,
 }
+impl final_llm_request_fmt {
+    pub fn new( genre: String, title: String,contents: String) -> Self {
+        Self {
+            genre: genre,
+            title:title,
+            contents: contents,
+        }
+    }
+}
+

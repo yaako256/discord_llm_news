@@ -39,11 +39,13 @@ pub fn fetch_feed_items(url: &str) -> (Vec<FeedItem>, Vec<String>) {
 
     // フィードアイテムを抽出
     for (i, item) in channel.items().iter().enumerate() {
-        match (item.title(), item.link()) {
-            (Some(title), Some(link)) => {
+        match (item.title(), item.link(),item.description()) {
+            (Some(title), Some(link),Some(description)) => {
                 feed_items.push(FeedItem {
+                    id :(0 as i16),
                     title: title.to_string(),
                     link: link.to_string(),
+                    description:description.to_string()
                 });
             }
             _ => {

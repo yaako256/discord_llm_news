@@ -1,6 +1,10 @@
 # モジュール概要
 このマークダウンでは、本プロジェクト作成に当たって調べ、使ったモジュール(LLMやRSSの取得)を、備忘録としてここに記す
 
+
+## 使用するニュースサイトRSS
+yahoo!ニュース[https://news.yahoo.co.jp/rss]
+
 ## RSS feedについて
 ### 参考サイト一覧
 (使える◎、まぁ使える〇、あんま△)<br>
@@ -41,3 +45,6 @@ version0.12は非同期がデフォであるため、設定を明示
 ```
 reqwest = { version = "0.12", features = ["blocking"] }
 ```
+---
+Htmlをmdに変換してLLMに渡したい。これ↓<br>
+html2md

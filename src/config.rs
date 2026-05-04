@@ -1,36 +1,56 @@
-use crate::models::news::News;
+use crate::models::news::NewsRss;
 
-pub fn get_news_config() -> Vec<News> {
+/*
+yahooのRSS[https://news.yahoo.co.jp/rss]の
+カテゴリごとのニュースから取得。
+トピックスは本文へのurlじゃなかった。
+*/
+pub fn get_news_config() -> Vec<NewsRss> {
     vec![
-        News::new(
+        NewsRss::new(
             100,
-            "主要",
-            "https://news.yahoo.co.jp/rss/topics/top-picks.xml",
-        ),
-        News::new(
-            200,
             "国内",
-            "https://news.yahoo.co.jp/rss/topics/top-picks.xml",
+            "https://news.yahoo.co.jp/rss/categories/domestic.xml",
         ),
-        News::new(
+        NewsRss::new(
+            200,
+            "国際",
+            "https://news.yahoo.co.jp/rss/categories/world.xml",
+        ),
+        NewsRss::new(
             300,
             "経済",
-            "https://news.yahoo.co.jp/rss/topics/top-picks.xml",
+            "https://news.yahoo.co.jp/rss/categories/business.xml",
         ),
-        News::new(
+        NewsRss::new(
             400,
             "エンタメ",
-            "https://news.yahoo.co.jp/rss/topics/top-picks.xml",
+            "https://news.yahoo.co.jp/rss/categories/entertainment.xml",
         ),
-        News::new(
+        NewsRss::new(
             500,
-            "IT",
-            "https://news.yahoo.co.jp/rss/topics/top-picks.xml",
+            "スポーツ",
+            "https://news.yahoo.co.jp/rss/categories/sports.xml",
         ),
-        News::new(
-            600,
+        NewsRss::new(
+        600,
+            "IT",
+            "https://news.yahoo.co.jp/rss/categories/it.xml",
+        ),
+        NewsRss::new(
+            700,
             "科学",
-            "https://news.yahoo.co.jp/rss/topics/top-picks.xml",
+            "https://news.yahoo.co.jp/rss/categories/science.xml",
+        ),
+        NewsRss::new(
+            800,
+            "ライフ",
+            "https://news.yahoo.co.jp/rss/categories/life.xml",
+        ),
+        NewsRss::new(
+            900,
+            "地域",
+            "https://news.yahoo.co.jp/rss/categories/local.xml",
         ),
     ]
 }
