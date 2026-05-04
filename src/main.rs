@@ -14,14 +14,12 @@ use crate::models::news::NewsRss;
 use config::get_news_config;
 use fetch_feed::fetch_feed_items;
 use llm_request::{final_llm_request, first_llm_request, second_llm_request};
-use reqwest;
 
 // ログ出力用(デバッグ用)
 use std::fs::File;
 use std::io::Write;
 
-use std::collections::HashSet;
-use html2md;
+
 
 fn main() {
     // 扱うニュース一覧(コンフィグ)を取得
@@ -46,70 +44,48 @@ fn main() {
                 f.id,
                 news.genre.clone(),
                 f.title.clone(),
+                f.description.clone(),
             ));
         }
     }
-    let mut file = File::create("news_md.md").expect("ファイル作成に失敗しました");
-        writeln!(file, "{:#?}", news_vec[0]).expect("ファイル書き込みに失敗しました");
 
-    /*
-    // LLMに聞く(1回目:各ジャンル第3候補を選んでもらう)
+    // LLMに聞く(1回目:各ジャンル第3候補を選んでもらう)(候補idをリストを取得)
     // 仮
     let id_list = [
         100, 101, 102, 200, 201, 202, 300, 301, 302, 400, 401, 402, 500, 501, 502, 600, 601, 602,
+        700, 701, 702, 800, 801, 802, 900, 901, 902,
     ];
     //let list = first_llm_request(first_llm_request_vec);
 
     // LLMに聞くフォーマット(2回目)にあわせる
     // ついでにこの中でニュースの本文を取得してる
-    let first_llm_request_vec = filter_feed_items(&news_vec, &id_list);
+    let second_llm_request_vec = fetch_feed::filter_feed_items(&news_vec, &id_list);
+
+    // LLMに聞く(2回目:各ジャンル第1候補を選んでもらう)(候補idをリストを取得)
+    
+
+    // LLMに聞くフォーマット(3回目)にあわせる。
+
+    // LLMに実際に要約してもらい、本文を作成する。
+
+    // 対象テキストをdiscordに送信してもらう。
+
+
+
+
 
     // デバッグ出力
     let mut file = File::create("news_log.txt").expect("ファイル作成に失敗しました");
-    for news in &first_llm_request_vec {
+    for news in &second_llm_request_vec {
         writeln!(file, "{:#?}", news).expect("ファイル書き込みに失敗しました");
     }
 
-    let mut file = File::create("news_md.md").expect("ファイル作成に失敗しました");
-        writeln!(file, "{:#?}", first_llm_request_vec[0].contents).expect("ファイル書き込みに失敗しました");
-     */
-}
-
-fn filter_feed_items(news_list: &Vec<NewsRss>, id_list: &[i16]) -> Vec<second_llm_request_fmt> {
-    // IDをHashSetに変換（高速検索用）
-    let id_set: HashSet<i16> = id_list.iter().cloned().collect();
-
-    let mut result = Vec::new();
-
-    for news in news_list {
-        for feed_item in &news.feed_items {
-            if id_set.contains(&feed_item.id) {
-                // 本文htmlテキストを取得する。
-                let response = match reqwest::blocking::get(&feed_item.link) {
-                    Ok(res) => res,
-                    Err(e) => {
-                        eprintln!("URL取得失敗: {}", e);
-                        return Vec::new(); // あるいは continue (ループ内なら)
-                    }
-                };
-
-                let body = match response.text() {
-                    Ok(t) => t,
-                    Err(e) => {
-                        eprintln!("テキスト変換失敗: {}", e);
-                        return Vec::new();
-                    }
-                };
-                let artcle_md = html2md::parse_html(&body);
-                result.push(second_llm_request_fmt::new(
-                    feed_item.id,
-                    news.genre.clone(),
-                    feed_item.title.clone(),
-                    artcle_md
-                ));
-            }
-        }
+    // 2. Markdownファイル (純粋なテキストとして書き出す)
+    let mut md_file = File::create("news_md.md").expect("ファイル作成に失敗しました");
+    // {:#?} をやめて、直接文字列を流し込む
+    // 1つ目の記事の内容を「そのまま」出力します
+    if let Some(first_news) = second_llm_request_vec.get(0) {
+        // .write_all を使うか、writeln! なら "{}" を使う
+        write!(md_file, "{}", first_news.contents).expect("ファイル書き込みに失敗しました");
     }
-
-    result
 }

@@ -8,13 +8,15 @@ pub struct first_llm_request_fmt {
     id: i16,
     genre: String,
     title: String,
+    description :String,
 }
 impl first_llm_request_fmt {
-    pub fn new(id: i16, genre: String, title: String) -> Self {
+    pub fn new(id: i16, genre: String, title: String,description :String) -> Self {
         Self {
             id: id,
             genre: genre,
             title: title,
+            description:description
         }
     }
 }
