@@ -67,7 +67,7 @@ pub fn generate_news_summary(
             }
         }
     }
-
+    println!("firstは正常に終了？");
     // デバッグ出力
     let mut file = File::create("logs/first_id_list.txt").expect("ファイル作成に失敗しました");
     writeln!(file, "{:#?}", id_list).expect("ファイル書き込みに失敗しました");
@@ -102,6 +102,7 @@ pub fn generate_news_summary(
     }
 
     // デバッグ出力
+    println!("secondは正常に終了？");
     let mut file = File::create("logs/second_id_list.txt").expect("ファイル作成に失敗しました");
     writeln!(file, "{:#?}", id_list).expect("ファイル書き込みに失敗しました");
 
@@ -109,6 +110,7 @@ pub fn generate_news_summary(
     let llm_request_final_vec: Vec<LLMRrequestFmtFinal> =
         filter_item::filter_second_items(&llm_request_second_vec, &id_list);
 
+        
     // APIの対策で秒数を開ける(正直いらない)
     thread::sleep(Duration::from_millis(30000));
 

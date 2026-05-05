@@ -15,7 +15,7 @@ pub fn llm_request_first(fmt: &[LLMRrequestFmtFirst], config: &Config) -> Result
     let prompt = build_prompt(fmt, "**3つずつ**");
 
     // 実際にリクエスト
-    let res_text = llm_request(prompt, config);
+    let res_text = llm_request(prompt, config, "first");
 
     serde_json::from_str::<GeminiIDResponse>(&res_text)
         .map(|parsed| parsed.id)
@@ -32,7 +32,7 @@ pub fn llm_request_second(
     let prompt = build_prompt(fmt, "**1つずつ**");
 
     // 実際にリクエスト
-    let res_text = llm_request(prompt, config);
+    let res_text = llm_request(prompt, config, "Second");
 
     // i16のベクトルにパース
     serde_json::from_str::<GeminiIDResponse>(&res_text)
@@ -94,18 +94,20 @@ pub fn llm_request_final(fmt: &[LLMRrequestFmtFinal], config: &Config) -> String
 }}
 
 # ニュースデータ
-{}"#,
-    data_json
+```json
+{}
+```"#,
+        data_json
     );
 
     // 実際にリクエスト
-    let res_text = llm_request(prompt, config);
+    let res_text = llm_request(prompt, config, "final");
 
     res_text
 }
 
 // 実際にllm_requestするところ
-fn llm_request(prompt: String, config: &Config) -> String {
+fn llm_request(prompt: String, config: &Config, time: &str) -> String {
     // geminiのエンドポイント(url)を作成
     let gemini_url = format!(
         "https://generativelanguage.googleapis.com/v1beta/{}:generateContent?key={}",
@@ -114,7 +116,12 @@ fn llm_request(prompt: String, config: &Config) -> String {
 
     // クライアントのインスタンス
     // 本来再利用が望ましい
-    let client = reqwest::blocking::Client::new();
+    //let client = reqwest::blocking::Client::new();
+    // 長考を認める(60秒)
+    let client = reqwest::blocking::Client::builder()
+        .timeout(std::time::Duration::from_secs(60))
+        .build()
+        .unwrap();
 
     // Geminiに送るファイルを構築
     let body = json!({
@@ -145,7 +152,7 @@ fn llm_request(prompt: String, config: &Config) -> String {
             "".to_string()
         }
         Err(e) => {
-            eprintln!("通信エラー: {}", e);
+            eprintln!("通信エラー{}: {}", time, e);
             "".to_string()
         }
     }
@@ -173,7 +180,9 @@ fn build_prompt<T: Serialize>(data: &[T], count_desc: &str) -> String {
 }}
 
 ## ニュースデータ
-{}"#,
+```json
+{}
+```"#,
         count_desc, data_json
     )
 }
