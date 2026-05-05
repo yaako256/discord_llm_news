@@ -7,7 +7,7 @@ use html2md;
 use scraper::{Html, Selector};
 use std::{collections::HashSet};
 
-use crate::config::{ SLEEP_TIME_MILLIS_BODY};
+use crate::config::{SLEEP_TIME_MILLIS_BODY};
 use crate::models::llm_request_fmt::{
     LLMRrequestFmtSecond, LLMRrequestFmtFinal
 };

@@ -11,7 +11,7 @@ use crate::models::llm_request_fmt::LLMRrequestFmtFirst;
 use std::{thread, time::Duration};
 
 pub fn news_rss_fetch(
-    news_vec: &mut Vec<NewsRss>,
+    news_vec: &Vec<NewsRss>,
     errors: &mut Vec<String>,
 ) -> (Vec<FeedItem>, Vec<LLMRrequestFmtFirst>) {
     let mut feed_items: Vec<FeedItem> = Vec::new();

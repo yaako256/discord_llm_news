@@ -1,9 +1,6 @@
-mod controller;
 mod models;
+mod controller;
 mod config;
-
-// RSSの初期設定用
-use crate::config::get_news_config;
 
 // LLMにリクエストするときの型
 use crate::models::llm_request_fmt::{
@@ -24,16 +21,15 @@ use crate::controller::llm_request;
 use std::fs::File;
 use std::io::Write;
 
-pub fn generate_news_summary() -> String {
-    // 扱うニュース一覧(コンフィグ)を取得
-    let mut news_vec: Vec<NewsRss> = get_news_config();
+pub fn generate_news_summary(news_vec:&Vec<NewsRss>) -> String {
+    
     // エラーを保持しておくための変数
     let mut errors: Vec<String> = Vec::new();
 
     // RSSのリンクからFeeditemsを作り、idも振る
     // LLMに聞くフォーマット(1回目)も作り出す。
     let (feed_items, llm_request_first_vec): (Vec<FeedItem>, Vec<LLMRrequestFmtFirst>) =
-        fetch_feed::news_rss_fetch(&mut news_vec, &mut errors);
+        fetch_feed::news_rss_fetch(&news_vec, &mut errors);
 
     // LLMに聞く(1回目:各ジャンル第3候補を選んでもらう)(候補idをリストを取得)
     // 仮
