@@ -14,7 +14,10 @@ pub const MAX_RETRIES: usize = 5;
 // サーバ負荷対策で何ミリ秒待つか
 pub const SLEEP_TIME_MILLIS_RSS: u64 = 1000;
 pub const SLEEP_TIME_MILLIS_BODY: u64 = 10000;
-pub const SLEEP_TIME_MILLIS_SUMMARY: u64 = 30000;
+
+pub const SLEEP_LLM_THINK_FIRST:u64=30000;
+pub const SLEEP_LLM_THINK_SECOND :u64=30000;
+pub const SLEEP_LLM_THINK_FINAL: u64 = 30000;
 
 // LLMに何秒の長考を許すか
 pub const LLM_THINK_TIME: u64 = 60;

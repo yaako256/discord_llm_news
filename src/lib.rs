@@ -36,6 +36,8 @@ pub fn generate_news_summary(
     // レスポンス用配列の初期化
     let mut id_list: Vec<i16> = Vec::new();
     for i in 0..config::MAX_RETRIES {
+        // APIの対策で秒数を開ける
+        thread::sleep(Duration::from_millis(config::SLEEP_LLM_THINK_FIRST));
         match llm_request::llm_request_first(&llm_request_first_vec, &config, errors) {
             Ok(ids) => {
                 id_list = ids;
@@ -57,6 +59,8 @@ pub fn generate_news_summary(
     // LLMに聞く(2回目:各ジャンル第1候補を選んでもらう)(候補idをリストを取得)
     let mut id_list: Vec<i16> = Vec::new();
     for i in 0..config::MAX_RETRIES {
+        // APIの対策で秒数を開ける
+        thread::sleep(Duration::from_millis(config::SLEEP_LLM_THINK_SECOND));
         match llm_request::llm_request_second(&llm_request_second_vec, &config, errors) {
             Ok(ids) => {
                 id_list = ids;
@@ -78,7 +82,7 @@ pub fn generate_news_summary(
     let mut res_text_md = String::new();
     for i in 0..config::MAX_RETRIES {
         // APIの対策で秒数を開ける(正直いらない)
-        thread::sleep(Duration::from_millis(config::SLEEP_TIME_MILLIS_SUMMARY));
+        thread::sleep(Duration::from_millis(config::SLEEP_LLM_THINK_FINAL));
         match llm_request::llm_request_final(&llm_request_final_vec, &config, errors) {
             Ok(contents) => {
                 res_text_md = contents;
@@ -100,12 +104,12 @@ pub fn generate_news_summary(
 fn error_process(count: usize, time: &str, errors: &mut Vec<String>) -> bool {
     let msg = format!(
         "試行 {}/{}: エラーが発生しました({})",
-        count,
+        count + 1,
         config::MAX_RETRIES,
         time
     );
     errors.push(msg);
-    if count >= config::MAX_RETRIES - 1 {
+    if count + 1 >= config::MAX_RETRIES{
         // 最後まで失敗した場合の処理
         let msg = format!("最大試行回数に達しました。({})", time);
         errors.push(msg);

@@ -9,6 +9,9 @@ use crate::models::llm_dtos::{GeminiIDResponse, GeminiTextResponse};
 
 use crate::{config, config::Config};
 
+// 日付取得用
+use time::OffsetDateTime;
+
 pub fn llm_request_first(
     fmt: &[LLMRrequestFmtFirst],
     config: &Config,
@@ -60,11 +63,12 @@ pub fn llm_request_final(
     // jsonにシリアライズ
     let data_json = serde_json::to_string_pretty(fmt).unwrap_or_default();
 
+    let date_string = get_date_string();
     // プロンプト作成
     let prompt = format!(
         r#"あなたは優秀なニュースキャスター兼エディターです。
 渡されたJSON形式のニュースリストを元に、Discord投稿用の「今日のニュースまとめ」を作成してください。
-
+また、本日は**{}**です。
 
 # 制約
 - 出力は必ず指定のJSON形式を守ること。
@@ -87,7 +91,7 @@ pub fn llm_request_final(
 
 # 構成サンプル
 ```
-# 📅 2026年5月5日(火)のニュース
+# 📅 20XX年X月X日(火)のニュース
 ## エンタメ
 ### いい感じにしたタイトル
 本文要約
@@ -113,7 +117,7 @@ pub fn llm_request_final(
 ```json
 {}
 ```"#,
-        data_json
+      date_string,  data_json
     );
 
     // 実際にリクエスト
@@ -196,7 +200,7 @@ fn build_prompt<T: Serialize>(data: &[T], count_desc: &str) -> String {
 
 # 制約事項
 1. 出力は必ず以下のJSON形式のみとし、**解説や挨拶は一切含めないでください**。
-2. 選出した記事の id のみを配列に格納してください。
+2. 選出した記事の **idのみ**を配列に格納し、**出力フォーマットを厳守してください**。
 3. 重複する id は含めないでください
 
 # 出力フォーマット
@@ -210,4 +214,34 @@ fn build_prompt<T: Serialize>(data: &[T], count_desc: &str) -> String {
 ```"#,
         count_desc, data_json
     )
+}
+
+
+fn get_date_string() -> String {
+    // 現在時刻を取得（ローカルが取れなければUTC）
+    let now = OffsetDateTime::now_local().unwrap_or_else(|_| OffsetDateTime::now_utc());
+
+    // 曜日の取得と日本語変換
+    let weekday_jp = match now.weekday() {
+        time::Weekday::Monday    => "月",
+        time::Weekday::Tuesday   => "火",
+        time::Weekday::Wednesday => "水",
+        time::Weekday::Thursday  => "木",
+        time::Weekday::Friday    => "金",
+        time::Weekday::Saturday  => "土",
+        time::Weekday::Sunday    => "日",
+    };
+
+    // フォーマットしてStringにする
+    // 5月6日のように「0」を消したい場合は padding:none を指定
+    let date_str = format!(
+        "{}年{}月{}日({})",
+        now.year(),
+        now.month() as u8, // Month型を数値(u8)にキャスト
+        now.day(),
+        weekday_jp
+    );
+
+    // 例:"2026年5月6日(水)"
+    date_str
 }
