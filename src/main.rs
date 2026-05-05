@@ -18,7 +18,9 @@ fn main() {
     let res_text = generate_news_summary(&news_vec, &config, &mut errors);
 
     // 対象テキストをdiscordに送信してもらう。
-    send::send_message(&res_text, &config.discord_webhook_url, &mut errors);
+    if res_text != "" {
+        send::send_message(&res_text, &config.discord_webhook_url, &mut errors);
+    }
 
     // エラーがあったらそれもdiscordに送信してもらう。
     if !errors.is_empty() {
