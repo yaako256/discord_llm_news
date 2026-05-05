@@ -29,7 +29,6 @@ pub fn filter_feed_items(
 
     for feed_item in feed_items {
         if id_set.contains(&feed_item.id) {
-            println!("入ったよ ID:{}", feed_item.id);
             // 本文HTMLテキストを取得
             let response = match reqwest::blocking::get(&feed_item.link) {
                 Ok(res) => res,
@@ -38,7 +37,6 @@ pub fn filter_feed_items(
                         "URL取得失敗 (ID: {}): {} (link:{})",
                         feed_item.id, e, feed_item.link
                     );
-                    //eprintln!("{}", msg);
                     errors.push(msg);
                     continue; // この記事の処理を飛ばして次の記事へ
                 }
@@ -48,7 +46,6 @@ pub fn filter_feed_items(
                 Ok(t) => t,
                 Err(e) => {
                     let msg = format!("テキスト変換失敗: {}", e);
-                    //eprintln!("{}", msg);
                     errors.push(msg);
                     continue; // この記事の処理を飛ばして次の記事へ
                 }
@@ -65,7 +62,6 @@ pub fn filter_feed_items(
                 Ok(s) => s,
                 Err(e) => {
                     let msg = format!("タイトルセレクタのパース失敗: {}", e);
-                    //eprintln!("{}", msg);
                     errors.push(msg);
                     continue; // この記事の処理を飛ばして次の記事へ
                 }
@@ -77,7 +73,6 @@ pub fn filter_feed_items(
                 element.text().collect::<Vec<_>>().join("")
             } else {
                 let msg = format!("タイトル要素検出失敗 (ID:{})", feed_item.id);
-                //eprintln!("{}", msg);
                 errors.push(msg);
                 continue; // この記事の処理を飛ばして次の記事へ
             };

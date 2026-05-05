@@ -1,4 +1,3 @@
-
 // RSS設定用構造体
 use crate::models::news::NewsRss;
 
@@ -64,11 +63,11 @@ pub fn get_news_config() -> Vec<NewsRss> {
     ]
 }
 
-
-
 // 環境変数の取得
 pub struct Config {
     pub discord_webhook_url: String,
+    pub gemini_api_key: String,
+    pub gemini_model: String,
 }
 impl Config {
     pub fn from_env() -> Self {
@@ -76,7 +75,9 @@ impl Config {
         dotenv().ok();
 
         Self {
-            discord_webhook_url: env::var("DISCORD_WEBHOOK_URL").expect("Missing URL"),
+            discord_webhook_url: env::var("DISCORD_WEBHOOK_URL").expect("Missing"),
+            gemini_api_key: env::var("GEMINI_API_KEY").expect("Missing"),
+            gemini_model: env::var("GEMINI_MODEL").expect("Missing"),
         }
     }
 }

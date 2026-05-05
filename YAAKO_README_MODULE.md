@@ -94,9 +94,25 @@ dtoを作り、送信用関数を作った。<br>
 めっちゃ参考になるサイトを以下に張る<br>
 [https://crimsonality.net/rust/make-discord-bot/]
 
+---
 
 ## LLMについて
 どうやらGemini 3.0 flashを使うのがよさそう。
 無料でいい感じらしい。
 
 ### 事前準備
+次の手順でapiを発行した
+```
+Google AI Studioにアクセス
+↓
+右上の「Get started」からGoogleアカウントでログイン
+↓
+ログイン後、左側のサイドバーメニューから「Gey API Keys」をクリック
+↓
+APIキーを作成
+↓
+キー名とプロジェクト名を設定
+(プロジェクトは基本新しく作る)
+↓
+キーをコピーして使う！
+```
