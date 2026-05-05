@@ -6,7 +6,9 @@ LLMにリクエスト時に使うJsonファイル形式を定義する。
 // 未使用だよっていう注意をなくしてくれるやつ
 #![allow(dead_code)]
 
-#[derive(Debug)]
+use serde::Serialize;
+
+#[derive(Debug,Serialize)]
 pub struct LLMRrequestFmtFirst {
     id: i16,
     genre: String,
@@ -24,7 +26,7 @@ impl LLMRrequestFmtFirst {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug,Serialize)]
 pub struct LLMRrequestFmtSecond {
     pub id: i16,
     pub genre: String,
@@ -42,7 +44,7 @@ impl LLMRrequestFmtSecond {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug,Serialize)]
 pub struct LLMRrequestFmtFinal {
     pub genre: String,
     pub title: String,
