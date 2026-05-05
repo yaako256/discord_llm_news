@@ -18,6 +18,6 @@ fn main() {
     // 環境変数等
     let config = config::Config::from_env();
 
-     // 対象テキストをdiscordに送信してもらう。
+    // 対象テキストをdiscordに送信してもらう。
     let aa =  send::send_message("いぇい",config.discord_webhook_url);
 }

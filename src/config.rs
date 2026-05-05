@@ -1,4 +1,3 @@
-
 // RSS設定用構造体
 use crate::models::news::NewsRss;
 
@@ -63,8 +62,6 @@ pub fn get_news_config() -> Vec<NewsRss> {
         ),
     ]
 }
-
-
 
 // 環境変数の取得
 pub struct Config {
