@@ -1,6 +1,7 @@
-mod models;
-mod controller;
-mod config;
+pub mod models;
+pub mod controller;
+pub mod config;
+pub mod discord;
 
 // LLMにリクエストするときの型
 use crate::models::llm_request_fmt::{

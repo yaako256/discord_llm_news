@@ -1,12 +1,10 @@
 
-mod models;
-mod config;
-mod discord;
+
 
 // RSS初期設定を受け取るための型
-use crate::models::news::NewsRss;
-use discord::send;
-
+use discord_llm_news::models::news::NewsRss;
+use discord_llm_news::discord::send;
+use discord_llm_news::config;
 use discord_llm_news::generate_news_summary;
 
 fn main() {
