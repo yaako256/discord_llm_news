@@ -35,11 +35,6 @@ pub fn generate_news_summary(
     let (feed_items, llm_request_first_vec): (Vec<FeedItem>, Vec<LLMRrequestFmtFirst>) =
         fetch_feed::news_rss_fetch(&news_vec, errors);
 
-    // デバッグ出力
-    let mut file = File::create("logs/news_log.txt").expect("ファイル作成に失敗しました");
-    for news in &llm_request_first_vec {
-        writeln!(file, "{:#?}", news).expect("ファイル書き込みに失敗しました");
-    }
     let max_retries = 3;
 
     // LLMに聞く(1回目:各ジャンル第3候補を選んでもらう)(候補idをリストを取得)
@@ -47,30 +42,28 @@ pub fn generate_news_summary(
     // レスポンス用配列の初期化
     let mut id_list: Vec<i16> = Vec::new();
     for i in 0..max_retries {
-        match llm_request::llm_request_first(&llm_request_first_vec, &config) {
+        match llm_request::llm_request_first(&llm_request_first_vec, &config, errors) {
             Ok(ids) => {
                 id_list = ids;
                 break; // 成功したのでループを抜ける
             }
-            Err(e) => {
-                eprintln!(
-                    "試行 {}/{}: エラーが発生しました: {}",
+            Err(_) => {
+                let msg = format!(
+                    "試行 {}/{}: エラーが発生しました(first_request_loop)",
                     i + 1,
                     max_retries,
-                    e
                 );
+                errors.push(msg);
                 if i == max_retries - 1 {
                     // 最後まで失敗した場合の処理
-                    eprintln!("最大試行回数に達しました。");
-                    // 必要に応じて return や panic を検討してください
+                    let msg = format!("最大試行回数に達しました。(first_request_loop)");
+                    errors.push(msg);
+                    // 空のストリングを返す。
+                    return "".to_string();
                 }
             }
         }
     }
-    println!("firstは正常に終了？");
-    // デバッグ出力
-    let mut file = File::create("logs/first_id_list.txt").expect("ファイル作成に失敗しました");
-    writeln!(file, "{:#?}", id_list).expect("ファイル書き込みに失敗しました");
 
     // LLMに聞くフォーマット(2回目)にあわせる
     // ついでにこの中でニュースの本文を取得してる
@@ -80,31 +73,28 @@ pub fn generate_news_summary(
     // LLMに聞く(2回目:各ジャンル第1候補を選んでもらう)(候補idをリストを取得)
     let mut id_list: Vec<i16> = Vec::new();
     for i in 0..max_retries {
-        match llm_request::llm_request_second(&llm_request_second_vec, &config) {
+        match llm_request::llm_request_second(&llm_request_second_vec, &config, errors) {
             Ok(ids) => {
                 id_list = ids;
                 break; // 成功したのでループを抜ける
             }
-            Err(e) => {
-                eprintln!(
-                    "試行 {}/{}: エラーが発生しました: {}",
+            Err(_) => {
+                let msg = format!(
+                    "試行 {}/{}: エラーが発生しました(second_request_loop)",
                     i + 1,
                     max_retries,
-                    e
                 );
+                errors.push(msg);
                 if i == max_retries - 1 {
                     // 最後まで失敗した場合の処理
-                    eprintln!("最大試行回数に達しました。");
-                    // 必要に応じて return や panic を検討してください
+                    let msg = format!("最大試行回数に達しました。(second_request_loop)");
+                    errors.push(msg);
+                    // 空のストリングを返す。
+                    return "".to_string();
                 }
             }
         }
     }
-
-    // デバッグ出力
-    println!("secondは正常に終了？");
-    let mut file = File::create("logs/second_id_list.txt").expect("ファイル作成に失敗しました");
-    writeln!(file, "{:#?}", id_list).expect("ファイル書き込みに失敗しました");
 
     // LLMに聞くフォーマット(3回目)にあわせる。
     let llm_request_final_vec: Vec<LLMRrequestFmtFinal> =
@@ -115,22 +105,24 @@ pub fn generate_news_summary(
     for i in 0..max_retries {
         // APIの対策で秒数を開ける(正直いらない)
         thread::sleep(Duration::from_millis(30000));
-        match llm_request::llm_request_final(&llm_request_final_vec, &config) {
+        match llm_request::llm_request_final(&llm_request_final_vec, &config, errors) {
             Ok(contents) => {
                 res_text_md = contents;
-                break; // 成功したのでループを抜ける
+                break; // 成功したのでループを抜けるa
             }
-            Err(e) => {
-                eprintln!(
-                    "試行 {}/{}: エラーが発生しました: {}",
+            Err(_) => {
+                let msg = format!(
+                    "試行 {}/{}: エラーが発生しました(final_request_loop)",
                     i + 1,
                     max_retries,
-                    e
                 );
+                errors.push(msg);
                 if i == max_retries - 1 {
                     // 最後まで失敗した場合の処理
-                    eprintln!("最大試行回数に達しました。");
-                    // 必要に応じて return や panic を検討してください
+                    let msg = format!("最大試行回数に達しました。(final_request_loop)");
+                    errors.push(msg);
+                    // 空のストリングを返す。
+                    return "".to_string();
                 }
             }
         }

@@ -10,6 +10,7 @@ use crate::models::llm_request_fmt::LLMRrequestFmtFirst;
 // サーバ負荷対策で待つために使う
 use std::{thread, time::Duration};
 
+// RSSの情報を引っ張ってくるためのやつ
 pub fn news_rss_fetch(
     news_vec: &[NewsRss],
     errors: &mut Vec<String>,
@@ -48,9 +49,9 @@ fn fetch_feed_item(
     // get() も bytes() も両方 Ok のときだけ body_bytes を取り出す
     let body_bytes = match reqwest::blocking::get(url).and_then(|resp| resp.bytes()) {
         Ok(bytes) => bytes,
-        Err(e) => {
+        Err(_) => {
             // エラーログを取得
-            let msg = format!("Failed to fetch from {}: {}", url, e);
+            let msg = format!("Failed to fetch RSS (fetch_feed::fetch_feed_item)");
             errors.push(msg);
 
             // エラーで取得できなかったらこの先意味ないのでリターン
@@ -61,8 +62,8 @@ fn fetch_feed_item(
     // RSSパース
     let channel = match Channel::read_from(&body_bytes[..]) {
         Ok(ch) => ch,
-        Err(e) => {
-            let msg = format!("Failed to parse RSS from {}: {}", url, e);
+        Err(_) => {
+            let msg = format!("Failed to parse RSS from (fetch_feed::fetch_feed_item)");
             errors.push(msg);
             return (Vec::new(), Vec::new());
         }
@@ -88,7 +89,7 @@ fn fetch_feed_item(
                 ));
             }
             _ => {
-                let msg = format!("Item {} skipped: missing title or link", i + 1);
+                let msg = format!("Item skipped: missing title or link (id:{})", id_start + (i as i16));
                 errors.push(msg);
             }
         }

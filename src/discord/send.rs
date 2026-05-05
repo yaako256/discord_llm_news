@@ -28,7 +28,6 @@ pub fn send_message(s: &str,webhook_url:String,errors: &mut Vec<String>) {
         
     if !response.status().is_success() {
         let msg = format!("discordがエラーを応答しました, {:?}", response.text());
-        eprintln!("{}",msg);
         errors.push(msg);
     } 
 }

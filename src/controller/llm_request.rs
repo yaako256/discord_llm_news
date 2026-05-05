@@ -1,4 +1,3 @@
-//use reqwest::blocking::Body;
 use serde::Serialize;
 use serde_json::json;
 
@@ -6,25 +5,34 @@ use crate::models::llm_request_fmt::{
     LLMRrequestFmtFinal, LLMRrequestFmtFirst, LLMRrequestFmtSecond,
 };
 
-use crate::models::llm_dtos::{GeminiIDResponse,GeminiTextResponse};
+use crate::models::llm_dtos::{GeminiIDResponse, GeminiTextResponse};
 
 use crate::config::Config;
 
-pub fn llm_request_first(fmt: &[LLMRrequestFmtFirst], config: &Config) -> Result<Vec<i16>, String> {
+pub fn llm_request_first(
+    fmt: &[LLMRrequestFmtFirst],
+    config: &Config,
+    errors: &mut Vec<String>,
+) -> Result<Vec<i16>, String> {
     // プロンプト作成
     let prompt = build_prompt(fmt, "**3つずつ**");
 
     // 実際にリクエスト
-    let res_text = llm_request(prompt, config, "first");
+    let res_text = llm_request(prompt, config, "first",errors);
 
     serde_json::from_str::<GeminiIDResponse>(&res_text)
         .map(|parsed| parsed.id)
-        .map_err(|e| format!("JSONパース失敗: {}", e))
+        .map_err(|_| {
+            let msg = format!("JSONパース失敗 (llm_request_first)");
+            errors.push(msg.clone());
+            msg
+        })
 }
 
 pub fn llm_request_second(
     fmt: &[LLMRrequestFmtSecond],
     config: &Config,
+    errors: &mut Vec<String>,
 ) -> Result<Vec<i16>, String> {
     // データをJSON文字列に変換
     //let data_json = serde_json::to_string_pretty(fmt).unwrap_or_default();
@@ -32,15 +40,23 @@ pub fn llm_request_second(
     let prompt = build_prompt(fmt, "**1つずつ**");
 
     // 実際にリクエスト
-    let res_text = llm_request(prompt, config, "Second");
+    let res_text = llm_request(prompt, config, "Second",errors);
 
     // i16のベクトルにパース
     serde_json::from_str::<GeminiIDResponse>(&res_text)
         .map(|parsed| parsed.id)
-        .map_err(|e| format!("JSONパース失敗: {}", e))
+        .map_err(|_| {
+            let msg = format!("JSONパース失敗 (llm_request_second)");
+            errors.push(msg.clone());
+            msg
+        })
 }
 
-pub fn llm_request_final(fmt: &[LLMRrequestFmtFinal], config: &Config) -> Result<String, String> {
+pub fn llm_request_final(
+    fmt: &[LLMRrequestFmtFinal],
+    config: &Config,
+    errors: &mut Vec<String>,
+) -> Result<String, String> {
     // jsonにシリアライズ
     let data_json = serde_json::to_string_pretty(fmt).unwrap_or_default();
 
@@ -101,18 +117,20 @@ pub fn llm_request_final(fmt: &[LLMRrequestFmtFinal], config: &Config) -> Result
     );
 
     // 実際にリクエスト
-    let res_text = llm_request(prompt, config, "final");
+    let res_text = llm_request(prompt, config, "final",errors);
 
     // Stringにパース
     serde_json::from_str::<GeminiTextResponse>(&res_text)
         .map(|parsed| parsed.contents)
-        .map_err(|e| format!("JSONパース失敗: {}", e))
-
-    
+        .map_err(|_| {
+            let msg = format!("JSONパース失敗 (llm_request_final)");
+            errors.push(msg.clone());
+            msg
+        })
 }
 
 // 実際にllm_requestするところ
-fn llm_request(prompt: String, config: &Config, time: &str) -> String {
+fn llm_request(prompt: String, config: &Config, time: &str,errors:&mut Vec<String>) -> String {
     // geminiのエンドポイント(url)を作成
     let gemini_url = format!(
         "https://generativelanguage.googleapis.com/v1beta/{}:generateContent?key={}",
@@ -152,12 +170,14 @@ fn llm_request(prompt: String, config: &Config, time: &str) -> String {
                 .unwrap_or("")
                 .to_string()
         }
-        Ok(res) => {
-            eprintln!("APIエラー: {}", res.status());
+        Ok(_) => {
+            let msg = format!("APIエラー{}",time);
+            errors.push(msg);
             "".to_string()
         }
-        Err(e) => {
-            eprintln!("通信エラー{}: {}", time, e);
+        Err(_) => {
+            let msg = format!("通信エラー{}",time);
+            errors.push(msg);
             "".to_string()
         }
     }
