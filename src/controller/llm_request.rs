@@ -7,7 +7,7 @@ use crate::models::llm_request_fmt::{
 
 use crate::models::llm_dtos::{GeminiIDResponse, GeminiTextResponse};
 
-use crate::config::Config;
+use crate::{config, config::Config};
 
 pub fn llm_request_first(
     fmt: &[LLMRrequestFmtFirst],
@@ -18,7 +18,7 @@ pub fn llm_request_first(
     let prompt = build_prompt(fmt, "**3つずつ**");
 
     // 実際にリクエスト
-    let res_text = llm_request(prompt, config, "first",errors);
+    let res_text = llm_request(prompt, config, "first", errors);
 
     serde_json::from_str::<GeminiIDResponse>(&res_text)
         .map(|parsed| parsed.id)
@@ -40,7 +40,7 @@ pub fn llm_request_second(
     let prompt = build_prompt(fmt, "**1つずつ**");
 
     // 実際にリクエスト
-    let res_text = llm_request(prompt, config, "Second",errors);
+    let res_text = llm_request(prompt, config, "Second", errors);
 
     // i16のベクトルにパース
     serde_json::from_str::<GeminiIDResponse>(&res_text)
@@ -117,7 +117,7 @@ pub fn llm_request_final(
     );
 
     // 実際にリクエスト
-    let res_text = llm_request(prompt, config, "final",errors);
+    let res_text = llm_request(prompt, config, "final", errors);
 
     // Stringにパース
     serde_json::from_str::<GeminiTextResponse>(&res_text)
@@ -130,7 +130,7 @@ pub fn llm_request_final(
 }
 
 // 実際にllm_requestするところ
-fn llm_request(prompt: String, config: &Config, time: &str,errors:&mut Vec<String>) -> String {
+fn llm_request(prompt: String, config: &Config, time: &str, errors: &mut Vec<String>) -> String {
     // geminiのエンドポイント(url)を作成
     let gemini_url = format!(
         "https://generativelanguage.googleapis.com/v1beta/{}:generateContent?key={}",
@@ -140,9 +140,9 @@ fn llm_request(prompt: String, config: &Config, time: &str,errors:&mut Vec<Strin
     // クライアントのインスタンス
     // 本来再利用が望ましい
     //let client = reqwest::blocking::Client::new();
-    // 長考を認める(60秒)
+    // 長考を認める(秒)
     let client = reqwest::blocking::Client::builder()
-        .timeout(std::time::Duration::from_secs(60))
+        .timeout(std::time::Duration::from_secs(config::LLM_THINK_TIME))
         .build()
         .unwrap();
 
@@ -170,13 +170,13 @@ fn llm_request(prompt: String, config: &Config, time: &str,errors:&mut Vec<Strin
                 .unwrap_or("")
                 .to_string()
         }
-        Ok(_) => {
-            let msg = format!("APIエラー{}",time);
+        Ok(res) => {
+            let msg = format!("APIエラー [status:{}] ({})", res.status(), time);
             errors.push(msg);
             "".to_string()
         }
         Err(_) => {
-            let msg = format!("通信エラー{}",time);
+            let msg = format!("通信エラー{}", time);
             errors.push(msg);
             "".to_string()
         }
