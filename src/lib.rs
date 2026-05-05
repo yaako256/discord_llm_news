@@ -56,17 +56,17 @@ pub fn generate_news_summary() -> String {
 
     // LLMに聞くフォーマット(3回目)にあわせる。
     let llm_request_final_vec: Vec<LLMRrequestFmtFinal> =
-        filter_item::filter_second_items(&llm_request_second_vec, &id_list, &mut errors);
+        filter_item::filter_second_items(&llm_request_second_vec, &id_list);
 
     // LLMに実際に要約してもらい、本文を作成する。
     let text = llm_request::llm_request_final(&llm_request_final_vec);
 
 
 
-    
+
     // デバッグ出力
     let mut file = File::create("logs/news_log.txt").expect("ファイル作成に失敗しました");
-    for news in &llm_request_second_vec {
+    for news in &llm_request_final_vec {
         writeln!(file, "{:#?}", news).expect("ファイル書き込みに失敗しました");
     }
 
@@ -74,7 +74,7 @@ pub fn generate_news_summary() -> String {
     let mut md_file = File::create("logs/news_md.md").expect("ファイル作成に失敗しました");
     // {:#?} をやめて、直接文字列を流し込む
     // 1つ目の記事の内容を「そのまま」出力します
-    if let Some(first_news) = llm_request_second_vec.get(0) {
+    if let Some(first_news) = llm_request_final_vec.get(0) {
         // .write_all を使うか、writeln! なら "{}" を使う
         write!(md_file, "{}", first_news.contents.clone()).expect("ファイル書き込みに失敗しました");
         return first_news.contents.clone();

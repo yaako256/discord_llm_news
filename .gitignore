@@ -1,3 +1,30 @@
+# --- Rust / Tauri Build Outputs ---
+# Rustのビルド成果物は巨大になるため必須
 /target
 
-*/log
+
+# --- Logs ---
+logs/
+*.log
+
+# --- Environment Variables (Security) ---
+# 秘密鍵やAPIキーを含む可能性があるため絶対にコミットしない
+.env
+.env.*
+!.env.example
+
+
+# --- IDE / Editor Specific ---
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+
+# --- Bundle / Installers ---
+*.msi
+*.exe
+*.dmg
+*.deb
+*.rpm
+*.app

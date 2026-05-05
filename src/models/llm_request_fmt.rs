@@ -3,6 +3,9 @@ models/llm_request.rs
 
 LLMにリクエスト時に使うJsonファイル形式を定義する。
 */
+// 未使用だよっていう注意をなくしてくれるやつ
+#![allow(dead_code)]
+
 #[derive(Debug)]
 pub struct LLMRrequestFmtFirst {
     id: i16,
