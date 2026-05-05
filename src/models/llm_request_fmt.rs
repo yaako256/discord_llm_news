@@ -4,31 +4,56 @@ models/llm_request.rs
 LLMにリクエスト時に使うJsonファイル形式を定義する。
 */
 #[derive(Debug)]
-pub struct first_llm_request_fmt {
+pub struct LLMRrequestFmtFirst {
     id: i16,
     genre: String,
     title: String,
+    description :String,
 }
-impl first_llm_request_fmt {
-    pub fn new(id: i16, genre: String, title: String) -> Self {
+impl LLMRrequestFmtFirst {
+    pub fn new(id: i16, genre: String, title: String,description :String) -> Self {
         Self {
             id: id,
             genre: genre,
             title: title,
+            description:description
+        }
+    }
+}
+
+
+
+#[derive(Debug)]
+pub struct LLMRrequestFmtSecond {
+    pub id: i16,
+    pub genre: String,
+    pub title: String,
+    pub contents: String,
+}
+impl LLMRrequestFmtSecond {
+    pub fn new(id: i16, genre: String,title: String, contents: String) -> Self {
+        Self {
+            id: id,
+            genre: genre,
+            title:title,
+            contents: contents,
         }
     }
 }
 
 #[derive(Debug)]
-pub struct second_llm_request_fmt {
-    id: i8,
+pub struct LLMRrequestFmtFinal {
     genre: String,
     title: String,
-    body: String,
+    contents: String,
 }
-#[derive(Debug)]
-pub struct final_llm_request_fmt {
-    genre: String,
-    title: String,
-    body: String,
+impl LLMRrequestFmtFinal {
+    pub fn new( genre: String, title: String,contents: String) -> Self {
+        Self {
+            genre: genre,
+            title:title,
+            contents: contents,
+        }
+    }
 }
+

@@ -1,5 +1,5 @@
 [package]
-name = "discord_LLM_news"
+name = "discord_llm_news"
 version = "0.1.0"
 edition = "2024"
 
@@ -9,3 +9,11 @@ rss = "2.0"
 
 # HTTPリクエストを簡単に送受信
 reqwest = { version = "0.12", features = ["blocking"]}
+
+# HTML解析用
+scraper = "0.18"
+
+
+# htmlをmdに変換する
+html2md = "0.2.15"
+

@@ -1,0 +1,225 @@
+FeedItem {
+    id: 100,
+    genre: "国内",
+    link: "https://news.yahoo.co.jp/articles/0f75c18e99eb9440eb6d2588f3cea8ec07537e35?source=rss",
+}
+FeedItem {
+    id: 101,
+    genre: "国内",
+    link: "https://news.yahoo.co.jp/articles/02630ee46fda55d9ffe3b2bc162a1e637dae0baa?source=rss",
+}
+FeedItem {
+    id: 102,
+    genre: "国内",
+    link: "https://news.yahoo.co.jp/articles/b850a677a68e2bcdae5ff21a1669234de081e57c?source=rss",
+}
+FeedItem {
+    id: 103,
+    genre: "国内",
+    link: "https://news.yahoo.co.jp/articles/0e9593caffcc3f89021b00e4b66c380f57fa2f03?source=rss",
+}
+FeedItem {
+    id: 104,
+    genre: "国内",
+    link: "https://news.yahoo.co.jp/articles/48cc886dfd1950a21ff4739bfe4b32eb6af98fd7?source=rss",
+}
+FeedItem {
+    id: 200,
+    genre: "国際",
+    link: "https://news.yahoo.co.jp/articles/3ca79472085b70a4320b17dc0a39a9bddb34c7fe?source=rss",
+}
+FeedItem {
+    id: 201,
+    genre: "国際",
+    link: "https://news.yahoo.co.jp/articles/4140c90872a7cdc891c1327ad0851e1e8f7db11b?source=rss",
+}
+FeedItem {
+    id: 202,
+    genre: "国際",
+    link: "https://news.yahoo.co.jp/articles/551943221c0a4b437c73d8f0d34c090bdc771133?source=rss",
+}
+FeedItem {
+    id: 203,
+    genre: "国際",
+    link: "https://news.yahoo.co.jp/articles/4fb8c3fb83096928f1a1edadff8120c0b6741e2e?source=rss",
+}
+FeedItem {
+    id: 204,
+    genre: "国際",
+    link: "https://news.yahoo.co.jp/articles/8a1e42bc15dbf78b7a6048aebecb8d6cc3f2c46a?source=rss",
+}
+FeedItem {
+    id: 300,
+    genre: "経済",
+    link: "https://news.yahoo.co.jp/articles/08be29d10a4985386120cbc5bc61241ca4668364?source=rss",
+}
+FeedItem {
+    id: 301,
+    genre: "経済",
+    link: "https://news.yahoo.co.jp/articles/4cb5391e8669dc1484ab7c31a962267c4a490d8b?source=rss",
+}
+FeedItem {
+    id: 302,
+    genre: "経済",
+    link: "https://news.yahoo.co.jp/articles/33b5d0cc023880915f06cfb4854be8fc128d5d8b?source=rss",
+}
+FeedItem {
+    id: 303,
+    genre: "経済",
+    link: "https://news.yahoo.co.jp/articles/dc01dcf1152c6024412ee1a79939efd58781c3a0?source=rss",
+}
+FeedItem {
+    id: 304,
+    genre: "経済",
+    link: "https://news.yahoo.co.jp/articles/d1a697d74f15b6aea3e0bf7ffed3decaf076dc6e?source=rss",
+}
+FeedItem {
+    id: 400,
+    genre: "エンタメ",
+    link: "https://news.yahoo.co.jp/articles/abc4da562db7eb0ac8fe7022650ef6ba84a0d10e?source=rss",
+}
+FeedItem {
+    id: 401,
+    genre: "エンタメ",
+    link: "https://news.yahoo.co.jp/articles/7eb583c3faa64daf6785e9e02dc7685c05c2fe02?source=rss",
+}
+FeedItem {
+    id: 402,
+    genre: "エンタメ",
+    link: "https://news.yahoo.co.jp/articles/43c8a0b0e7130ab01fb3d1d485cdc44cc553566a?source=rss",
+}
+FeedItem {
+    id: 403,
+    genre: "エンタメ",
+    link: "https://news.yahoo.co.jp/articles/1271bf067ee7cd36b86d190a28b976b5d09a6eac?source=rss",
+}
+FeedItem {
+    id: 404,
+    genre: "エンタメ",
+    link: "https://news.yahoo.co.jp/articles/6967a120772123fcb2f8d9ffbde44df57573e7a0?source=rss",
+}
+FeedItem {
+    id: 500,
+    genre: "スポーツ",
+    link: "https://news.yahoo.co.jp/articles/fa4a2c1fe9cc4035caa20e880bd0afaae5c56f5c?source=rss",
+}
+FeedItem {
+    id: 501,
+    genre: "スポーツ",
+    link: "https://news.yahoo.co.jp/articles/5b0aa468b385c6b40e9fde435536adfdc9bba113?source=rss",
+}
+FeedItem {
+    id: 502,
+    genre: "スポーツ",
+    link: "https://news.yahoo.co.jp/articles/960ddff58cb7cbfd37f7ee3774ea6474ea9cd06b?source=rss",
+}
+FeedItem {
+    id: 503,
+    genre: "スポーツ",
+    link: "https://news.yahoo.co.jp/articles/5f45f33b536d2b83fbc96d2286e24dbc3101e6bc?source=rss",
+}
+FeedItem {
+    id: 504,
+    genre: "スポーツ",
+    link: "https://news.yahoo.co.jp/articles/c6b60bb45459f434f7b84344d765fcb331bc32df?source=rss",
+}
+FeedItem {
+    id: 600,
+    genre: "IT",
+    link: "https://news.yahoo.co.jp/articles/d971bb66229c63ad004b8ca2c5b9711d24735e65?source=rss",
+}
+FeedItem {
+    id: 601,
+    genre: "IT",
+    link: "https://news.yahoo.co.jp/articles/106cce6706130d17ebcd7816ed4d9ecf1245393c?source=rss",
+}
+FeedItem {
+    id: 602,
+    genre: "IT",
+    link: "https://news.yahoo.co.jp/articles/52976fe609082f7273214892aee9bff264a348ed?source=rss",
+}
+FeedItem {
+    id: 603,
+    genre: "IT",
+    link: "https://news.yahoo.co.jp/articles/5f7574a9b0d112b1c6aed31f05d48dc0caa22e0e?source=rss",
+}
+FeedItem {
+    id: 604,
+    genre: "IT",
+    link: "https://news.yahoo.co.jp/articles/2300ab817bf7f023c69fb3096cd185de58fece07?source=rss",
+}
+FeedItem {
+    id: 700,
+    genre: "科学",
+    link: "https://news.yahoo.co.jp/articles/aa0779ceb9cd2d20e7e34f8348d99969e1fe500a?source=rss",
+}
+FeedItem {
+    id: 701,
+    genre: "科学",
+    link: "https://news.yahoo.co.jp/articles/285efe2398c2749998855eac5c23e875f2eef244?source=rss",
+}
+FeedItem {
+    id: 702,
+    genre: "科学",
+    link: "https://news.yahoo.co.jp/articles/d722322120481578ac6cb369c8d2deaf540f9fdb?source=rss",
+}
+FeedItem {
+    id: 703,
+    genre: "科学",
+    link: "https://news.yahoo.co.jp/articles/abd84d8c9631aaa31197d3cc971b49c790b8c367?source=rss",
+}
+FeedItem {
+    id: 704,
+    genre: "科学",
+    link: "https://news.yahoo.co.jp/articles/658d65bc650db4e564163f80b421468b603e7f46?source=rss",
+}
+FeedItem {
+    id: 800,
+    genre: "ライフ",
+    link: "https://news.yahoo.co.jp/articles/777dccd51a822e1b3b9d35f83b100c229336fd49?source=rss",
+}
+FeedItem {
+    id: 801,
+    genre: "ライフ",
+    link: "https://news.yahoo.co.jp/articles/ce44d5d54052acd8b6fa1ce4483a46f73621c056?source=rss",
+}
+FeedItem {
+    id: 802,
+    genre: "ライフ",
+    link: "https://news.yahoo.co.jp/articles/d643292544bd547077c2ec890bdedc5a7b0f5c82?source=rss",
+}
+FeedItem {
+    id: 803,
+    genre: "ライフ",
+    link: "https://news.yahoo.co.jp/articles/91d12e27d7edd6250b78f398f0c770225024896d?source=rss",
+}
+FeedItem {
+    id: 804,
+    genre: "ライフ",
+    link: "https://news.yahoo.co.jp/articles/3150a79d77d65d15d6afdae64c9d372bcc3cb702?source=rss",
+}
+FeedItem {
+    id: 900,
+    genre: "地域",
+    link: "https://news.yahoo.co.jp/articles/c9d6e08a988940a6b090341f2129285bd46371a9?source=rss",
+}
+FeedItem {
+    id: 901,
+    genre: "地域",
+    link: "https://news.yahoo.co.jp/articles/dcf8f20c98007c1c34bf66f698d59b1710c79c45?source=rss",
+}
+FeedItem {
+    id: 902,
+    genre: "地域",
+    link: "https://news.yahoo.co.jp/articles/429889f19b33ed3b8f17447cc59fb86ac7c4d351?source=rss",
+}
+FeedItem {
+    id: 903,
+    genre: "地域",
+    link: "https://news.yahoo.co.jp/articles/34c967aefcf01883c7dd94116f39d26b1d3919e4?source=rss",
+}
+FeedItem {
+    id: 904,
+    genre: "地域",
+    link: "https://news.yahoo.co.jp/articles/344a31e0759ba2bbb2e2b6ebdc2f95e19b705653?source=rss",
+}
