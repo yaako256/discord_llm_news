@@ -14,9 +14,13 @@ fn main() {
     // 扱うニュース一覧(コンフィグ)を取得
     let news_vec: Vec<NewsRss> = config::get_news_config();
 
+    // エラーログを保持する変数
+    let mut errors: Vec<String> = Vec::new();
+
     // RSSフィードとLLMを使って文章作成
-    let _text = generate_news_summary(&news_vec,&config);
+    let res_text = generate_news_summary(&news_vec,&config,&mut errors);
 
     // 対象テキストをdiscordに送信してもらう。
-    let aa =  send::send_message("いぇい",config.discord_webhook_url);
+    //send::send_message("いぇい",config.discord_webhook_url);
+    send::send_message(&res_text,config.discord_webhook_url,&mut errors);
 }

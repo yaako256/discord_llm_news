@@ -7,7 +7,7 @@ use crate::discord::dtos;
 
 
 /// discordに送信する関数
-pub fn send_message(s: &str,webhook_url:String) -> Result<(), Box<dyn std::error::Error>> {
+pub fn send_message(s: &str,webhook_url:String,errors: &mut Vec<String>) {
 
     let mut headers = HeaderMap::new();
     headers.append(
@@ -27,8 +27,9 @@ pub fn send_message(s: &str,webhook_url:String) -> Result<(), Box<dyn std::error
         .expect("エラー");
         
     if !response.status().is_success() {
-        eprintln!("discordがエラーを応答しました, {:?}", response.text());
+        let msg = format!("discordがエラーを応答しました, {:?}", response.text());
+        eprintln!("{}",msg);
+        errors.push(msg);
     } 
-    Ok(())
 }
 

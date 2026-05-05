@@ -51,7 +51,6 @@ fn fetch_feed_item(
         Err(e) => {
             // エラーログを取得
             let msg = format!("Failed to fetch from {}: {}", url, e);
-            //eprintln!("{}", msg);
             errors.push(msg);
 
             // エラーで取得できなかったらこの先意味ないのでリターン
@@ -64,7 +63,6 @@ fn fetch_feed_item(
         Ok(ch) => ch,
         Err(e) => {
             let msg = format!("Failed to parse RSS from {}: {}", url, e);
-            //eprintln!("{}", msg);
             errors.push(msg);
             return (Vec::new(), Vec::new());
         }
@@ -91,7 +89,6 @@ fn fetch_feed_item(
             }
             _ => {
                 let msg = format!("Item {} skipped: missing title or link", i + 1);
-                //eprintln!("{}", msg);
                 errors.push(msg);
             }
         }

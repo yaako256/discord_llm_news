@@ -1,4 +1,3 @@
-use reqwest::blocking::Client;
 //use reqwest::blocking::Body;
 use serde::Serialize;
 use serde_json::json;
@@ -13,7 +12,7 @@ use crate::config::Config;
 
 pub fn llm_request_first(fmt: &[LLMRrequestFmtFirst], config: &Config) -> Result<Vec<i16>, String> {
     // プロンプト作成
-    let prompt = build_prompt(fmt,"**3つずつ**");
+    let prompt = build_prompt(fmt, "**3つずつ**");
 
     // 実際にリクエスト
     let res_text = llm_request(prompt, config);
@@ -23,11 +22,14 @@ pub fn llm_request_first(fmt: &[LLMRrequestFmtFirst], config: &Config) -> Result
         .map_err(|e| format!("JSONパース失敗: {}", e))
 }
 
-pub fn llm_request_second(fmt: &[LLMRrequestFmtSecond], config: &Config) ->Result<Vec<i16>, String> {
+pub fn llm_request_second(
+    fmt: &[LLMRrequestFmtSecond],
+    config: &Config,
+) -> Result<Vec<i16>, String> {
     // データをJSON文字列に変換
     //let data_json = serde_json::to_string_pretty(fmt).unwrap_or_default();
 
-    let prompt = build_prompt(fmt,"**1つずつ**");
+    let prompt = build_prompt(fmt, "**1つずつ**");
 
     // 実際にリクエスト
     let res_text = llm_request(prompt, config);
@@ -38,8 +40,68 @@ pub fn llm_request_second(fmt: &[LLMRrequestFmtSecond], config: &Config) ->Resul
         .map_err(|e| format!("JSONパース失敗: {}", e))
 }
 
-pub fn llm_request_final(fmt: &Vec<LLMRrequestFmtFinal>, config: &Config) {
-    // まだ未実装
+pub fn llm_request_final(fmt: &[LLMRrequestFmtFinal], config: &Config) -> String {
+    // jsonにシリアライズ
+    let data_json = serde_json::to_string_pretty(fmt).unwrap_or_default();
+
+    // プロンプト作成
+    let prompt = format!(
+        r#"あなたは優秀なニュースキャスター兼エディターです。
+渡されたJSON形式のニュースリストを元に、Discord投稿用の「今日のニュースまとめ」を作成してください。
+
+
+# 制約
+- 出力は必ず指定のJSON形式を守ること。
+- 文字数はDiscordの制限(2000文字)を考慮し、1800文字以内。
+- Markdown記法（# や ##、** 等）を活用すること。
+- 絵文字等を使い、キャッチーに仕上げること。
+
+
+# 構成ルール
+1. **挨拶と日付**: 冒頭に「📅 2026年5月5日(火)のニュース」のように記載。
+2. **ニュース本文**: 
+   - ジャンルごとに整理（例：IT、スポーツ、エンタメ）。
+   - タイトルは元のままではなく、思わずクリックしたくなるようなキャッチーなものに書き換える。
+   - 要約は3行程度で、適切な絵文字を各所に散りばめる。
+3. **本日の豆知識**: 
+   - ニュースとは別に、言葉の由来や面白い雑学を1つ紹介。
+4. **締めの一言**: 
+   - 読者が一日を元気に始められるような温かい励まし。
+
+
+# 構成サンプル
+```
+# 📅 2026年5月5日(火)のニュース
+## エンタメ
+### いい感じにしたタイトル
+本文要約
+
+## スポーツ
+### いい感じにしたタイトル
+本文要約
+
+...最後まで...
+
+## 本日の豆知識！
+実は名前に使っていい漢字と使っちゃいけない漢字って定義されてるらしいよ。(実際はもっと長く)
+
+本日も頑張ってください！(本日の励ましの言葉)
+```
+
+# 出力フォーマット
+{{
+  "contents": "（ここにすべての文章をMarkdown形式で入れる）"
+}}
+
+# ニュースデータ
+{}"#,
+    data_json
+    );
+
+    // 実際にリクエスト
+    let res_text = llm_request(prompt, config);
+
+    res_text
 }
 
 // 実際にllm_requestするところ
@@ -91,7 +153,10 @@ fn llm_request(prompt: String, config: &Config) -> String {
 
 // 共通のプロンプト生成ロジック
 fn build_prompt<T: Serialize>(data: &[T], count_desc: &str) -> String {
+    // jsonにシリアライズ
     let data_json = serde_json::to_string_pretty(data).unwrap_or_default();
+
+    // プロンプトを作成
     format!(
         r#"あなたはプロのニュース編集者です。提供されたニュースデータ（JSON形式）を「面白さ」「話題性」「重要性」の観点から深く分析してください。
 
