@@ -1,5 +1,5 @@
 [package]
-name = "discord_LLM_news"
+name = "discord_llm_news"
 version = "0.1.0"
 edition = "2024"
 
