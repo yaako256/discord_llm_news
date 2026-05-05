@@ -1,11 +1,18 @@
+
+// RSS設定用構造体
 use crate::models::news::NewsRss;
 
+// 環境変数取得用
+use dotenvy::dotenv;
+use std::env;
+
 // RSSから最新のニュースをいくつ扱うか
-pub const RSS_GET_NUM:usize = 5;
+pub const RSS_GET_NUM: usize = 5;
 
 // サーバ負荷対策で何ミリ秒待つか
-pub const SLEEP_TIME_MILLIS_RSS:u64 = 1000;
-pub const SLEEP_TIME_MILLIS_BODY:u64 = 10000;
+pub const SLEEP_TIME_MILLIS_RSS: u64 = 1000;
+pub const SLEEP_TIME_MILLIS_BODY: u64 = 10000;
+
 /*
 yahooのRSS[https://news.yahoo.co.jp/rss]の
 カテゴリごとのニュースから取得。
@@ -38,11 +45,7 @@ pub fn get_news_config() -> Vec<NewsRss> {
             "スポーツ",
             "https://news.yahoo.co.jp/rss/categories/sports.xml",
         ),
-        NewsRss::new(
-        600,
-            "IT",
-            "https://news.yahoo.co.jp/rss/categories/it.xml",
-        ),
+        NewsRss::new(600, "IT", "https://news.yahoo.co.jp/rss/categories/it.xml"),
         NewsRss::new(
             700,
             "科学",
@@ -59,4 +62,21 @@ pub fn get_news_config() -> Vec<NewsRss> {
             "https://news.yahoo.co.jp/rss/categories/local.xml",
         ),
     ]
+}
+
+
+
+// 環境変数の取得
+pub struct Config {
+    pub discord_webhook_url: String,
+}
+impl Config {
+    pub fn from_env() -> Self {
+        // envファイルから環境変数をロードする
+        dotenv().ok();
+
+        Self {
+            discord_webhook_url: env::var("DISCORD_WEBHOOK_URL").expect("Missing URL"),
+        }
+    }
 }

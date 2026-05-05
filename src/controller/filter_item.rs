@@ -130,7 +130,6 @@ pub fn filter_feed_items(
 pub fn filter_second_items(
     feed_items: &Vec<LLMRrequestFmtSecond>,
     id_list: &[i16],
-    errors: &mut Vec<String>,
 ) -> Vec<LLMRrequestFmtFinal> {
     // id_list を HashSet に変換して検索を高速化
     let id_set: HashSet<i16> = id_list.iter().cloned().collect();
