@@ -1,5 +1,10 @@
 use crate::models::news::NewsRss;
 
+// RSSから最新のニュースをいくつ扱うか
+pub const RSS_GET_NUM:usize = 5;
+
+// サーバ負荷対策で何ミリ秒待つか
+pub const SLEEP_TIME_MILLIS:usize = 1000;
 /*
 yahooのRSS[https://news.yahoo.co.jp/rss]の
 カテゴリごとのニュースから取得。
