@@ -8,9 +8,16 @@ use std::env;
 // RSSから最新のニュースをいくつ扱うか
 pub const RSS_GET_NUM: usize = 5;
 
+// 1回のLLMリクエストで何回リトライするか
+pub const MAX_RETRIES: usize = 5;
+
 // サーバ負荷対策で何ミリ秒待つか
 pub const SLEEP_TIME_MILLIS_RSS: u64 = 1000;
 pub const SLEEP_TIME_MILLIS_BODY: u64 = 10000;
+pub const SLEEP_TIME_MILLIS_SUMMARY: u64 = 30000;
+
+// LLMに何秒の長考を許すか
+pub const LLM_THINK_TIME: u64 = 60;
 
 /*
 yahooのRSS[https://news.yahoo.co.jp/rss]の

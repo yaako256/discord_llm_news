@@ -1,30 +1,26 @@
+// パッケージ
 pub mod config;
 pub mod controller;
 pub mod discord;
 pub mod models;
 
+// サーバ負荷対策やApi対策で待つために使う
+use std::{thread, time::Duration};
+
 // LLMにリクエストするときの型
 use crate::models::llm_request_fmt::{
-    LLMRrequestFmtFinal,
-    LLMRrequestFmtFirst,
-    LLMRrequestFmtSecond, //LLMRrequestFmtFinal
+    LLMRrequestFmtFinal, LLMRrequestFmtFirst, LLMRrequestFmtSecond,
 };
+
 // RSS初期設定を受け取るための型
 use crate::models::news::{FeedItem, NewsRss};
 
 // RSSの情報をURLから持ってくる関数
 use crate::controller::{fetch_feed, filter_item};
-
 // LLMに聞く関数
 use crate::controller::llm_request;
 
-// サーバ負荷対策やApi対策で待つために使う
-use std::{thread, time::Duration};
-
-// ログ出力用(デバッグ用)
-use std::fs::File;
-use std::io::Write;
-
+/// ニュースをRSSから取得、LLMで要約、discordに送信できる形にしてreturn
 pub fn generate_news_summary(
     news_vec: &[NewsRss],
     config: &config::Config,
@@ -35,42 +31,23 @@ pub fn generate_news_summary(
     let (feed_items, llm_request_first_vec): (Vec<FeedItem>, Vec<LLMRrequestFmtFirst>) =
         fetch_feed::news_rss_fetch(&news_vec, errors);
 
-    // デバッグ出力
-    let mut file = File::create("logs/news_log.txt").expect("ファイル作成に失敗しました");
-    for news in &llm_request_first_vec {
-        writeln!(file, "{:#?}", news).expect("ファイル書き込みに失敗しました");
-    }
-    let max_retries = 3;
-
     // LLMに聞く(1回目:各ジャンル第3候補を選んでもらう)(候補idをリストを取得)
     // もし正しい返答が返ってこなかったらMAX_RETRIESまで繰り返す
     // レスポンス用配列の初期化
     let mut id_list: Vec<i16> = Vec::new();
-    for i in 0..max_retries {
-        match llm_request::llm_request_first(&llm_request_first_vec, &config) {
+    for i in 0..config::MAX_RETRIES {
+        match llm_request::llm_request_first(&llm_request_first_vec, &config, errors) {
             Ok(ids) => {
                 id_list = ids;
                 break; // 成功したのでループを抜ける
             }
-            Err(e) => {
-                eprintln!(
-                    "試行 {}/{}: エラーが発生しました: {}",
-                    i + 1,
-                    max_retries,
-                    e
-                );
-                if i == max_retries - 1 {
-                    // 最後まで失敗した場合の処理
-                    eprintln!("最大試行回数に達しました。");
-                    // 必要に応じて return や panic を検討してください
+            Err(_) => {
+                if error_process(i, "first_request_loop", errors) {
+                    return "".to_string();
                 }
             }
         }
     }
-    println!("firstは正常に終了？");
-    // デバッグ出力
-    let mut file = File::create("logs/first_id_list.txt").expect("ファイル作成に失敗しました");
-    writeln!(file, "{:#?}", id_list).expect("ファイル書き込みに失敗しました");
 
     // LLMに聞くフォーマット(2回目)にあわせる
     // ついでにこの中でニュースの本文を取得してる
@@ -79,57 +56,61 @@ pub fn generate_news_summary(
 
     // LLMに聞く(2回目:各ジャンル第1候補を選んでもらう)(候補idをリストを取得)
     let mut id_list: Vec<i16> = Vec::new();
-    for i in 0..max_retries {
-        match llm_request::llm_request_second(&llm_request_second_vec, &config) {
+    for i in 0..config::MAX_RETRIES {
+        match llm_request::llm_request_second(&llm_request_second_vec, &config, errors) {
             Ok(ids) => {
                 id_list = ids;
                 break; // 成功したのでループを抜ける
             }
-            Err(e) => {
-                eprintln!(
-                    "試行 {}/{}: エラーが発生しました: {}",
-                    i + 1,
-                    max_retries,
-                    e
-                );
-                if i == max_retries - 1 {
-                    // 最後まで失敗した場合の処理
-                    eprintln!("最大試行回数に達しました。");
-                    // 必要に応じて return や panic を検討してください
+            Err(_) => {
+                if error_process(i, "second_request_loop", errors) {
+                    return "".to_string();
                 }
             }
         }
     }
 
-    // デバッグ出力
-    println!("secondは正常に終了？");
-    let mut file = File::create("logs/second_id_list.txt").expect("ファイル作成に失敗しました");
-    writeln!(file, "{:#?}", id_list).expect("ファイル書き込みに失敗しました");
-
     // LLMに聞くフォーマット(3回目)にあわせる。
     let llm_request_final_vec: Vec<LLMRrequestFmtFinal> =
         filter_item::filter_second_items(&llm_request_second_vec, &id_list);
 
-        
-    // APIの対策で秒数を開ける(正直いらない)
-    thread::sleep(Duration::from_millis(30000));
-
     // LLMに実際に要約してもらい、本文を作成する。
-    let res_text_md = llm_request::llm_request_final(&llm_request_final_vec, &config);
-
-    // デバッグ出力
-    let mut file = File::create("logs/news_log.txt").expect("ファイル作成に失敗しました");
-    for news in &llm_request_final_vec {
-        writeln!(file, "{:#?}", news).expect("ファイル書き込みに失敗しました");
+    let mut res_text_md = String::new();
+    for i in 0..config::MAX_RETRIES {
+        // APIの対策で秒数を開ける(正直いらない)
+        thread::sleep(Duration::from_millis(config::SLEEP_TIME_MILLIS_SUMMARY));
+        match llm_request::llm_request_final(&llm_request_final_vec, &config, errors) {
+            Ok(contents) => {
+                res_text_md = contents;
+                break; // 成功したのでループを抜けるa
+            }
+            Err(_) => {
+                if error_process(i, "final_request_loop", errors) {
+                    return "".to_string();
+                }
+            }
+        }
     }
-
-    // 2. Markdownファイル (純粋なテキストとして書き出す)
-    let mut md_file = File::create("logs/news_md.md").expect("ファイル作成に失敗しました");
-    // {:#?} をやめて、直接文字列を流し込む
-    // 1つ目の記事の内容を「そのまま」出力します
-    // .write_all を使うか、writeln! なら "{}" を使う
-    write!(md_file, "{}", res_text_md.clone()).expect("ファイル書き込みに失敗しました");
 
     // 送信するテキストをreturn
     res_text_md
+}
+
+// リクエストがエラーだった時ののプロセス
+fn error_process(count: usize, time: &str, errors: &mut Vec<String>) -> bool {
+    let msg = format!(
+        "試行 {}/{}: エラーが発生しました({})",
+        count,
+        config::MAX_RETRIES,
+        time
+    );
+    errors.push(msg);
+    if count >= config::MAX_RETRIES - 1 {
+        // 最後まで失敗した場合の処理
+        let msg = format!("最大試行回数に達しました。({})", time);
+        errors.push(msg);
+        // 空のストリングを返す。
+        return true;
+    }
+    return false;
 }
