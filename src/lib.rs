@@ -1,6 +1,5 @@
 mod controller;
 mod models;
-
 mod config;
 
 // RSSの初期設定用
