@@ -1,6 +1,6 @@
 use rss::Channel;
 //use reqwest;
-use crate::models::news::FeedItem;
+use crate::models::news::{FeedItem, NewsRss};
 
 use reqwest;
 //use html2md;
@@ -8,18 +8,41 @@ use html2md;
 use scraper::{Html, Selector};
 use std::{collections::HashSet, fmt::format};
 
+use crate::config::{RSS_GET_NUM, SLEEP_TIME_MILLIS_BODY, SLEEP_TIME_MILLIS_RSS};
 use crate::models::llm_request_fmt::{
     LLMRrequestFmtFirst,
     LLMRrequestFmtSecond, //LLMRrequestFmtFinal
 };
-use crate::config::{RSS_GET_NUM,SLEEP_TIME_MILLIS};
 
 // サーバ負荷対策で待つために使う
 use std::{thread, time::Duration};
 
+pub fn news_rss_fetch(
+    news_vec: &mut Vec<NewsRss>,
+    errors: &mut Vec<String>,
+) -> (Vec<FeedItem>, Vec<LLMRrequestFmtFirst>) {
+    let mut feed_items: Vec<FeedItem> = Vec::new();
+    let mut first_llm_request_vec: Vec<LLMRrequestFmtFirst> = Vec::new();
+
+    for news in news_vec {
+        let (feed_item, first_llm_request) = fetch_feed_item(
+            news.id_start,
+            news.genre.as_str(),
+            news.rss_url.as_str(),
+            errors,
+        );
+        feed_items.extend(feed_item);
+        first_llm_request_vec.extend(first_llm_request);
+
+        // サーバ負荷対策で秒数を開ける
+        thread::sleep(Duration::from_millis(SLEEP_TIME_MILLIS_RSS));
+    }
+
+    (feed_items, first_llm_request_vec)
+}
 
 // RSSのデータを取得する
-pub fn fetch_feed_items(
+fn fetch_feed_item(
     id_start: i16,
     genre: &str,
     url: &str,
@@ -96,12 +119,15 @@ pub fn filter_feed_items(
 
     for feed_item in feed_items {
         if id_set.contains(&feed_item.id) {
-            println!("入ったよ ID:{}",feed_item.id);
+            println!("入ったよ ID:{}", feed_item.id);
             // 本文HTMLテキストを取得
             let response = match reqwest::blocking::get(&feed_item.link) {
                 Ok(res) => res,
                 Err(e) => {
-                    let msg = format!("URL取得失敗 (ID: {}): {} (link:{})", feed_item.id, e,feed_item.link);
+                    let msg = format!(
+                        "URL取得失敗 (ID: {}): {} (link:{})",
+                        feed_item.id, e, feed_item.link
+                    );
                     //eprintln!("{}", msg);
                     errors.push(msg);
                     continue; // この記事の処理を飛ばして次の記事へ
@@ -181,6 +207,9 @@ pub fn filter_feed_items(
                 title_text,
                 article_md,
             ));
+
+            // サーバ負荷対策で秒数を開ける
+            thread::sleep(Duration::from_millis(SLEEP_TIME_MILLIS_BODY));
         }
     }
     result

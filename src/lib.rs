@@ -27,7 +27,8 @@ use std::io::Write;
 pub fn generate_news_summary() -> String {
     // 扱うニュース一覧(コンフィグ)を取得
     let mut news_vec: Vec<NewsRss> = get_news_config();
-
+    // エラーを保持しておくための変数
+    let mut errors: Vec<String> = Vec::new();
     // エラーを保持しておくための変数
     //let mut errors = Vec::new();
     /*
@@ -53,6 +54,7 @@ pub fn generate_news_summary() -> String {
        }
     */
     // idとリンクを結びつけておく構造体
+    /*
     let mut feed_items: Vec<FeedItem> = Vec::new();
     // LLMに聞くフォーマット(1回目)
     let mut first_llm_request_vec: Vec<LLMRrequestFmtFirst> = Vec::new();
@@ -71,7 +73,12 @@ pub fn generate_news_summary() -> String {
         feed_items.extend(feed_item);
         first_llm_request_vec.extend(first_llm_request);
 
-    }
+    } */
+
+   // RSSのリンクからFeeditemsを作り、idも振る
+    // LLMに聞くフォーマット(1回目)も作り出す。
+    let (feed_items, first_llm_request_vec): (Vec<FeedItem>, Vec<LLMRrequestFmtFirst>) =
+        fetch_feed::news_rss_fetch(&mut news_vec, &mut errors);
 
     // デバッグ出力
     let mut file = File::create("logs/news_log.txt").expect("ファイル作成に失敗しました");
@@ -104,11 +111,11 @@ pub fn generate_news_summary() -> String {
 
     // デバッグ出力
     /*
-    let mut file = File::create("logs/news_log.txt").expect("ファイル作成に失敗しました");
-    for news in &second_llm_request_vec {
-        writeln!(file, "{:#?}", news).expect("ファイル書き込みに失敗しました");
-    }
- */
+       let mut file = File::create("logs/news_log.txt").expect("ファイル作成に失敗しました");
+       for news in &second_llm_request_vec {
+           writeln!(file, "{:#?}", news).expect("ファイル書き込みに失敗しました");
+       }
+    */
     // 2. Markdownファイル (純粋なテキストとして書き出す)
     let mut md_file = File::create("logs/news_md.md").expect("ファイル作成に失敗しました");
     // {:#?} をやめて、直接文字列を流し込む
