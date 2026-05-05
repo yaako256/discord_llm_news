@@ -21,7 +21,7 @@ use crate::controller::llm_request;
 use std::fs::File;
 use std::io::Write;
 
-pub fn generate_news_summary(news_vec:&Vec<NewsRss>) -> String {
+pub fn generate_news_summary(news_vec : &Vec<NewsRss>) -> String {
     
     // エラーを保持しておくための変数
     let mut errors: Vec<String> = Vec::new();

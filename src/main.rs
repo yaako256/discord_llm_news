@@ -7,12 +7,14 @@ mod discord;
 use crate::models::news::NewsRss;
 use discord::send;
 
+use discord_llm_news::generate_news_summary;
+
 fn main() {
     // 扱うニュース一覧(コンフィグ)を取得
     let news_vec: Vec<NewsRss> = config::get_news_config();
 
     // RSSフィードとLLMを使って文章作成
-    let _text = discord_llm_news::generate_news_summary(&news_vec);
+    let _text = generate_news_summary(&news_vec);
 
 
     // 環境変数等
