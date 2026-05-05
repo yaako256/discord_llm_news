@@ -110,12 +110,31 @@ pub fn generate_news_summary(
     let llm_request_final_vec: Vec<LLMRrequestFmtFinal> =
         filter_item::filter_second_items(&llm_request_second_vec, &id_list);
 
-        
-    // APIの対策で秒数を開ける(正直いらない)
-    thread::sleep(Duration::from_millis(30000));
-
     // LLMに実際に要約してもらい、本文を作成する。
-    let res_text_md = llm_request::llm_request_final(&llm_request_final_vec, &config);
+    let mut res_text_md = String::new();
+    for i in 0..max_retries {
+        // APIの対策で秒数を開ける(正直いらない)
+        thread::sleep(Duration::from_millis(30000));
+        match llm_request::llm_request_final(&llm_request_final_vec, &config) {
+            Ok(contents) => {
+                res_text_md = contents;
+                break; // 成功したのでループを抜ける
+            }
+            Err(e) => {
+                eprintln!(
+                    "試行 {}/{}: エラーが発生しました: {}",
+                    i + 1,
+                    max_retries,
+                    e
+                );
+                if i == max_retries - 1 {
+                    // 最後まで失敗した場合の処理
+                    eprintln!("最大試行回数に達しました。");
+                    // 必要に応じて return や panic を検討してください
+                }
+            }
+        }
+    }
 
     // デバッグ出力
     let mut file = File::create("logs/news_log.txt").expect("ファイル作成に失敗しました");

@@ -6,7 +6,7 @@ use crate::models::llm_request_fmt::{
     LLMRrequestFmtFinal, LLMRrequestFmtFirst, LLMRrequestFmtSecond,
 };
 
-use crate::models::llm_dtos::GeminiIDResponse;
+use crate::models::llm_dtos::{GeminiIDResponse,GeminiTextResponse};
 
 use crate::config::Config;
 
@@ -40,7 +40,7 @@ pub fn llm_request_second(
         .map_err(|e| format!("JSONパース失敗: {}", e))
 }
 
-pub fn llm_request_final(fmt: &[LLMRrequestFmtFinal], config: &Config) -> String {
+pub fn llm_request_final(fmt: &[LLMRrequestFmtFinal], config: &Config) -> Result<String, String> {
     // jsonにシリアライズ
     let data_json = serde_json::to_string_pretty(fmt).unwrap_or_default();
 
@@ -103,7 +103,12 @@ pub fn llm_request_final(fmt: &[LLMRrequestFmtFinal], config: &Config) -> String
     // 実際にリクエスト
     let res_text = llm_request(prompt, config, "final");
 
-    res_text
+    // Stringにパース
+    serde_json::from_str::<GeminiTextResponse>(&res_text)
+        .map(|parsed| parsed.contents)
+        .map_err(|e| format!("JSONパース失敗: {}", e))
+
+    
 }
 
 // 実際にllm_requestするところ
