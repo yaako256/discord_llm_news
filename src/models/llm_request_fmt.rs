@@ -8,20 +8,18 @@ pub struct LLMRrequestFmtFirst {
     id: i16,
     genre: String,
     title: String,
-    description :String,
+    description: String,
 }
 impl LLMRrequestFmtFirst {
-    pub fn new(id: i16, genre: String, title: String,description :String) -> Self {
+    pub fn new(id: i16, genre: String, title: String, description: String) -> Self {
         Self {
             id: id,
             genre: genre,
             title: title,
-            description:description
+            description: description,
         }
     }
 }
-
-
 
 #[derive(Debug)]
 pub struct LLMRrequestFmtSecond {
@@ -31,11 +29,11 @@ pub struct LLMRrequestFmtSecond {
     pub contents: String,
 }
 impl LLMRrequestFmtSecond {
-    pub fn new(id: i16, genre: String,title: String, contents: String) -> Self {
+    pub fn new(id: i16, genre: String, title: String, contents: String) -> Self {
         Self {
             id: id,
             genre: genre,
-            title:title,
+            title: title,
             contents: contents,
         }
     }
@@ -43,17 +41,16 @@ impl LLMRrequestFmtSecond {
 
 #[derive(Debug)]
 pub struct LLMRrequestFmtFinal {
-    genre: String,
-    title: String,
-    contents: String,
+    pub genre: String,
+    pub title: String,
+    pub contents: String,
 }
 impl LLMRrequestFmtFinal {
-    pub fn new( genre: String, title: String,contents: String) -> Self {
+    pub fn new(genre: String, title: String, contents: String) -> Self {
         Self {
             genre: genre,
-            title:title,
+            title: title,
             contents: contents,
         }
     }
 }
-
