@@ -7,6 +7,9 @@ pub mod models;
 // サーバ負荷対策やApi対策で待つために使う
 use std::{thread, time::Duration};
 
+// ジッター用
+use rand::Rng;
+
 // LLMにリクエストするときの型
 use crate::models::llm_request_fmt::{
     LLMRrequestFmtFinal, LLMRrequestFmtFirst, LLMRrequestFmtSecond,
@@ -129,14 +132,23 @@ fn backoff_sleep(miss_count: i8) {
     // 初期値代入
     let mut delay_secs: f64 = config::LLM_SLEEP_TIME as f64;
 
+    // いらないと思うけどジッター機能追加
+    // 1. 係数を 0.9 〜 1.1 の間でランダムに生成
+    let mut rng = rand::thread_rng();
+    let jitter_factor: f64 = rng.gen_range(0.9..=1.1);
+
     // 指数バックオフ計算
     for _ in 0..miss_count {
         delay_secs = delay_secs * config::BACKOFF_FACTOR;
     }
 
     if delay_secs < config::SLEEP_LLM_TIME_MAX as f64 {
-        thread::sleep(Duration::from_millis(config::LLM_SLEEP_TIME));
+        thread::sleep(Duration::from_millis(
+            ((config::LLM_SLEEP_TIME as f64) * jitter_factor) as u64,
+        ));
     } else {
-        thread::sleep(Duration::from_millis(config::SLEEP_LLM_TIME_MAX));
+        thread::sleep(Duration::from_millis(
+            ((config::SLEEP_LLM_TIME_MAX as f64) * jitter_factor) as u64,
+        ));
     }
 }
