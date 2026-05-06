@@ -15,11 +15,16 @@ pub const MAX_RETRIES: usize = 5;
 pub const SLEEP_TIME_MILLIS_RSS: u64 = 1000;
 pub const SLEEP_TIME_MILLIS_BODY: u64 = 10000;
 
-pub const SLEEP_LLM_THINK_FIRST:u64=30000;
-pub const SLEEP_LLM_THINK_SECOND :u64=30000;
-pub const SLEEP_LLM_THINK_FINAL: u64 = 30000;
+// Geminiに聞く時(ミス時)の待機時間
+// 待ち時間はどうでもいいので適当に長めにとってる
+pub const LLM_SLEEP_TIME: u64 = 31000;
 
-// LLMに何秒の長考を許すか
+// 指数バックオフで何倍ずつ増やすか
+pub const BACKOFF_FACTOR: f64 = 1.3;
+// 指数バックオフしたときの最大待機時間
+pub const SLEEP_LLM_TIME_MAX: u64 = 120000;
+
+// LLMに何秒の長考を許すか？
 pub const LLM_THINK_TIME: u64 = 60;
 
 /*

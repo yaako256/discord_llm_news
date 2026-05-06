@@ -26,6 +26,8 @@ pub fn generate_news_summary(
     config: &config::Config,
     errors: &mut Vec<String>,
 ) -> String {
+    let mut llm_miss_count: i8 = 1;
+
     // RSSのリンクからFeeditemsを作り、idも振る
     // LLMに聞くフォーマット(1回目)も作り出す。
     let (feed_items, llm_request_first_vec): (Vec<FeedItem>, Vec<LLMRrequestFmtFirst>) =
@@ -37,7 +39,7 @@ pub fn generate_news_summary(
     let mut id_list: Vec<i16> = Vec::new();
     for i in 0..config::MAX_RETRIES {
         // APIの対策で秒数を開ける
-        thread::sleep(Duration::from_millis(config::SLEEP_LLM_THINK_FIRST));
+        backoff_sleep(llm_miss_count);
         match llm_request::llm_request_first(&llm_request_first_vec, &config, errors) {
             Ok(ids) => {
                 id_list = ids;
@@ -47,6 +49,7 @@ pub fn generate_news_summary(
                 if error_process(i, "first_request_loop", errors) {
                     return "".to_string();
                 }
+                llm_miss_count += 1;
             }
         }
     }
@@ -60,7 +63,7 @@ pub fn generate_news_summary(
     let mut id_list: Vec<i16> = Vec::new();
     for i in 0..config::MAX_RETRIES {
         // APIの対策で秒数を開ける
-        thread::sleep(Duration::from_millis(config::SLEEP_LLM_THINK_SECOND));
+        backoff_sleep(llm_miss_count);
         match llm_request::llm_request_second(&llm_request_second_vec, &config, errors) {
             Ok(ids) => {
                 id_list = ids;
@@ -70,6 +73,7 @@ pub fn generate_news_summary(
                 if error_process(i, "second_request_loop", errors) {
                     return "".to_string();
                 }
+                llm_miss_count += 1;
             }
         }
     }
@@ -81,8 +85,8 @@ pub fn generate_news_summary(
     // LLMに実際に要約してもらい、本文を作成する。
     let mut res_text_md = String::new();
     for i in 0..config::MAX_RETRIES {
-        // APIの対策で秒数を開ける(正直いらない)
-        thread::sleep(Duration::from_millis(config::SLEEP_LLM_THINK_FINAL));
+        // APIの対策で秒数を開ける
+        backoff_sleep(llm_miss_count);
         match llm_request::llm_request_final(&llm_request_final_vec, &config, errors) {
             Ok(contents) => {
                 res_text_md = contents;
@@ -92,6 +96,7 @@ pub fn generate_news_summary(
                 if error_process(i, "final_request_loop", errors) {
                     return "".to_string();
                 }
+                llm_miss_count += 1;
             }
         }
     }
@@ -109,7 +114,7 @@ fn error_process(count: usize, time: &str, errors: &mut Vec<String>) -> bool {
         time
     );
     errors.push(msg);
-    if count + 1 >= config::MAX_RETRIES{
+    if count + 1 >= config::MAX_RETRIES {
         // 最後まで失敗した場合の処理
         let msg = format!("最大試行回数に達しました。({})", time);
         errors.push(msg);
@@ -117,4 +122,21 @@ fn error_process(count: usize, time: &str, errors: &mut Vec<String>) -> bool {
         return true;
     }
     return false;
+}
+
+// API制限を危惧して指数バックオフでディレイさせる
+fn backoff_sleep(miss_count: i8) {
+    // 初期値代入
+    let mut delay_secs: f64 = config::LLM_SLEEP_TIME as f64;
+
+    // 指数バックオフ計算
+    for _ in 0..miss_count {
+        delay_secs = delay_secs * config::BACKOFF_FACTOR;
+    }
+
+    if delay_secs < config::SLEEP_LLM_TIME_MAX as f64 {
+        thread::sleep(Duration::from_millis(config::LLM_SLEEP_TIME));
+    } else {
+        thread::sleep(Duration::from_millis(config::SLEEP_LLM_TIME_MAX));
+    }
 }
