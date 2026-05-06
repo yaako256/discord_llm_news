@@ -1,5 +1,7 @@
-use serde::Deserialize;
+// models/llm_dtos.rs
 
+// シリアライズ用
+use serde::Deserialize;
 
 // idだけを保持する
 // 1回と2回目のリクエストで使う。

@@ -1,3 +1,5 @@
+// lib.rs
+
 // パッケージ
 pub mod config;
 pub mod controller;

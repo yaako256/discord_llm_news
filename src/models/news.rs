@@ -1,5 +1,5 @@
 /*
-models/news_rss.rs
+models/news.rs
 
 初期設定としてRSSを設定するときに使う構造体と
 リンクを保持しとく用の構造体を定義するところ

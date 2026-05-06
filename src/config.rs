@@ -1,3 +1,5 @@
+// config.rs
+
 // RSS設定用構造体
 use crate::models::news::NewsRss;
 

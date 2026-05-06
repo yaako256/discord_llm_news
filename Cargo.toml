@@ -30,3 +30,12 @@ time = { version = "0.3", features = ["formatting", "macros", "local-offset"] }
 
 # 乱数生成
 rand = "0.8"
+
+
+# リリースビルド用の処理？geminiに聞いた。
+[profile.release]
+opt-level = 3        # 最大限の最適化
+lto = true           # リンク時最適化（バイナリが速く、小さくなる）
+codegen-units = 1    # コンパイルは遅くなるが、実行速度が向上する
+panic = "abort"      # パニック時のメモリ巻き戻しを無効化（軽量化）
+strip = true         # デバッグ情報を削除してサイズを大幅削減

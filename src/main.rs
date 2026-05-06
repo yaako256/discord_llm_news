@@ -1,3 +1,5 @@
+// main.rs
+
 // RSS初期設定を受け取るための型
 use discord_llm_news::config;
 use discord_llm_news::discord::send;

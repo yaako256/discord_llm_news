@@ -1,3 +1,5 @@
+// discord/dtos.rs
+
 use serde::Serialize;
 
 // --- discordに送信するためのdto ---
