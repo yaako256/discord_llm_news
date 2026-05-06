@@ -31,13 +31,18 @@ pub fn generate_news_summary(
     config: &config::Config,
     errors: &mut Vec<String>,
 ) -> String {
-    let mut llm_miss_count: i8 = 1;
+    let mut llm_miss_count: u32 = 1;
 
     // RSSのリンクからFeeditemsを作り、idも振る
     // LLMに聞くフォーマット(1回目)も作り出す。
     let (feed_items, llm_request_first_vec): (Vec<FeedItem>, Vec<LLMRrequestFmtFirst>) =
         fetch_feed::news_rss_fetch(&news_vec, errors);
 
+    // feed_itemsが取得できなかった時のエラー
+    if feed_items.is_empty() { 
+        errors.push("feed_itemsが取得できなかった".to_string());
+        return String::new(); }
+    
     // LLMに聞く(1回目:各ジャンル第3候補を選んでもらう)(候補idをリストを取得)
     // もし正しい返答が返ってこなかったらMAX_RETRIESまで繰り返す
     // レスポンス用配列の初期化
@@ -130,7 +135,7 @@ fn error_process(count: usize, time: &str, errors: &mut Vec<String>) -> bool {
 }
 
 // API制限を危惧して指数バックオフでディレイさせる
-fn backoff_sleep(miss_count: i8) {
+fn backoff_sleep(miss_count: u32) {
     // 初期値代入
     let mut delay_secs: f64 = config::LLM_SLEEP_TIME as f64;
 
@@ -144,13 +149,10 @@ fn backoff_sleep(miss_count: i8) {
         delay_secs = delay_secs * config::BACKOFF_FACTOR;
     }
 
-    if delay_secs < config::SLEEP_LLM_TIME_MAX as f64 {
-        thread::sleep(Duration::from_millis(
-            ((config::LLM_SLEEP_TIME as f64) * jitter_factor) as u64,
-        ));
-    } else {
-        thread::sleep(Duration::from_millis(
-            ((config::SLEEP_LLM_TIME_MAX as f64) * jitter_factor) as u64,
-        ));
+    // 上限設定
+    if delay_secs > config::SLEEP_LLM_TIME_MAX as f64 {
+        delay_secs = config::SLEEP_LLM_TIME_MAX as f64;
     }
+
+    thread::sleep(Duration::from_millis((delay_secs * jitter_factor) as u64));
 }
